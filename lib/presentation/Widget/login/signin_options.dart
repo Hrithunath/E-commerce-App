@@ -3,8 +3,8 @@ import 'package:e_commerce_app/core/Theme/appcolors.dart';
 import 'package:e_commerce_app/presentation/Widget/text.dart';
 import 'package:flutter/material.dart';
 
-class Register extends StatelessWidget {
-  const Register({
+class Registered extends StatelessWidget {
+  const Registered({
     super.key,
     required this.screenHeight,
     required this.screenWidth,

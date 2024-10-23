@@ -27,7 +27,7 @@ class Register extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordAgainController = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthBloc>();
@@ -45,9 +45,9 @@ class Register extends StatelessWidget {
         child: Scaffold(
           body: Padding(
             padding: EdgeInsets.only(top: screenHeight * 0.02),
-            child: SingleChildScrollView(
-              child: Form(
-                key: formkey,
+            child: Form(
+              key: formkey,
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -116,6 +116,8 @@ class Register extends StatelessWidget {
                       fontSize: screenHeight * 0.018,
                       fontWeight: FontWeight.w300,
                     ),
+                     
+                            
                     TextCustom(
                       onTap: () => Navigator.pushNamed(context, "/Login"),
                       text: "Sign in",

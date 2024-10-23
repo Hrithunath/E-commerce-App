@@ -3,6 +3,7 @@ import 'package:e_commerce_app/core/constant/constant.dart';
 import 'package:e_commerce_app/core/utils/validator.dart';
 import 'package:e_commerce_app/domain/model/user_model.dart';
 import 'package:e_commerce_app/presentation/Widget/button.dart';
+import 'package:e_commerce_app/presentation/Widget/login/signin_options.dart';
 import 'package:e_commerce_app/presentation/Widget/text.dart';
 import 'package:e_commerce_app/presentation/Widget/textFormFeild.dart';
 import 'package:e_commerce_app/presentation/bloc/auth_bloc.dart';
@@ -59,9 +60,9 @@ class Login extends StatelessWidget {
             resizeToAvoidBottomInset: true,
             body: Padding(
               padding: EdgeInsets.all(screenWidth * 0.05),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formkey,
+              child: Form(
+                key: formkey,
+                child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -103,14 +104,14 @@ class Login extends StatelessWidget {
                         borderRadius: 10,
                         onPressed: () async {
                           if (formkey.currentState!.validate()) {
-      UserModel user = UserModel(
-        email: emailController.text.trim(),
-        password: passWordController.text.trim(),
-      );
-      context.read<AuthBloc>().add(SignInEvent(
-          email: emailController.text,
-          password: passWordController.text));
-    }
+                      UserModel user = UserModel(
+                        email: emailController.text.trim(),
+                        password: passWordController.text.trim(),
+                      );
+                      context.read<AuthBloc>().add(SignInEvent(
+                          email: emailController.text,
+                          password: passWordController.text));
+                    }
                         },
                       ),
                      TextCustom(
@@ -138,7 +139,7 @@ class Login extends StatelessWidget {
                               color: AppColors.primarycolor,
                             ),
                             SizedBox(height: screenHeight * 0.025),
-                          
+                           Registered(screenHeight: screenHeight, screenWidth: screenWidth),
                             SizedBox(height: screenHeight * 0.025),
                     ],
                   ),
