@@ -43,12 +43,16 @@ class Home extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> fetchTopCollections() async {
     var products = await fetchProducts();
-    return products.where((product) => product['isTopCollection'] == true).toList();
+    return products
+        .where((product) => product['isTopCollection'] == true)
+        .toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
     var products = await fetchProducts();
-    return products.where((product) => product['isNewArrival'] == true).toList();
+    return products
+        .where((product) => product['isNewArrival'] == true)
+        .toList();
   }
 
   @override
@@ -96,10 +100,10 @@ class Home extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: 10),          
+              const SizedBox(height: 10),
               // Top Categories Section
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: TextCustom(
@@ -112,14 +116,20 @@ class Home extends StatelessWidget {
                 future: fetchCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return Skeletonizer(
+                      enabled: true,
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      ),
+                    );
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Text("No categories found");
                   }
 
-                
                   var categories = snapshot.data!;
                   return SizedBox(
                     height: 100,
@@ -128,13 +138,13 @@ class Home extends StatelessWidget {
                       itemCount: categories.length,
                       itemBuilder: (context, index) {
                         var category = categories[index];
-                            print('$category');
-                           
-                        String imageUrl = category['imageUrl'] ?? 'https://via.placeholder.com/100'; 
-                     
-                  
+                        print('$category');
+
+                        String imageUrl = category['imageUrl'] ??
+                            'https://via.placeholder.com/100';
+
                         return CustomProductCategory(
-                          category: category, imageUrl: imageUrl);
+                            category: category, imageUrl: imageUrl);
                       },
                     ),
                   );
@@ -142,12 +152,20 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               // Second Carousel Top collection
-              const CustomTextRow(leading: "Popular collections", trailing: "See More"),
-               FutureBuilder<List<Map<String, dynamic>>>(
+              const CustomTextRow(
+                  leading: "Popular collections", trailing: "See More"),
+              FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchTopCollections(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return Skeletonizer(
+                      enabled: true,
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      ),
+                    );
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -156,33 +174,44 @@ class Home extends StatelessWidget {
 
                   var topCollections = snapshot.data!;
                   return SizedBox(
-                                  height: 350,
-                                
+                    height: 350,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: topCollections.length,
                       itemBuilder: (context, index) {
-                        
                         var product1 = topCollections[index];
-                           List<dynamic> imageList = product1['uploadImages']  ?? 'https://via.placeholder.com/100';
-                         print("$product1");
-                        return 
-                        CustomProductCard(imageList: imageList, product1: product1,
-                         onTap: () {
-                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProductDetails(productDetails: product1,)));
-                         });
+                        List<dynamic> imageList = product1['uploadImages'] ??
+                            'https://via.placeholder.com/100';
+                        print("$product1");
+                        return CustomProductCard(
+                            imageList: imageList,
+                            product1: product1,
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                        productDetails: product1,
+                                      )));
+                            });
                       },
                     ),
                   );
                 },
               ),
-              // New Arrivals Section 
-              const CustomTextRow(leading: "New Arrivals", trailing: "See More"),
+              // New Arrivals Section
+              const CustomTextRow(
+                  leading: "New Arrivals", trailing: "See More"),
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: fetchNewArrivals(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                     return Skeletonizer(
+                      enabled: true,
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      ),
+                    );
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -197,13 +226,17 @@ class Home extends StatelessWidget {
                       itemCount: newArrivals.length,
                       itemBuilder: (context, index) {
                         var product2 = newArrivals[index];
-                         List<dynamic> imageList = product2['uploadImages'] ?? 'https://via.placeholder.com/100';
+                        List<dynamic> imageList = product2['uploadImages'] ??
+                            'https://via.placeholder.com/100';
                         return CustomProductCard(
-                          imageList: imageList,
-                           product1: product2,
-                            onTap: (){
-                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProductDetails(productDetails: product2,)));
-                            } );
+                            imageList: imageList,
+                            product1: product2,
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                        productDetails: product2,
+                                      )));
+                            });
                       },
                     ),
                   );

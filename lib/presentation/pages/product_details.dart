@@ -162,8 +162,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               const SizedBox(height: 13),
-              Padding(
-                padding: const EdgeInsets.only(left: 17),
+              const Padding(
+                padding: EdgeInsets.only(left: 17),
                 child: TextCustom(
                   text: "Select Size",
                   fontSize: 17,
@@ -202,8 +202,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.only(left: 17),
+              const Padding(
+                padding: EdgeInsets.only(left: 17),
                 child: TextCustom(
                   text: "Specification",
                   fontSize: 17,
@@ -216,7 +216,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextCustom(
+                    const TextCustom(
                       text: "Shown:",
                       fontSize: 17,
                     ),

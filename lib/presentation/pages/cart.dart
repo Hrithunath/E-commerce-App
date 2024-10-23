@@ -6,6 +6,7 @@ import 'package:e_commerce_app/presentation/bloc/cart/cart_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Cart extends StatelessWidget {
   const Cart({super.key});
@@ -32,7 +33,14 @@ class Cart extends StatelessWidget {
             child: BlocBuilder<CartBloc, CartState>(
               builder: (context, state) {
                 if (state is CartLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Skeletonizer(
+                      enabled: true,
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      ),
+                    );
                 } else if (state is CartLoadedState) {
                   final cartItems = state.cartItems;
 

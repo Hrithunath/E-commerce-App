@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/core/Theme/appcolors.dart';
 import 'package:e_commerce_app/core/constant/constant.dart';
 import 'package:e_commerce_app/core/utils/validator.dart';
+import 'package:e_commerce_app/domain/model/user_model.dart';
 import 'package:e_commerce_app/presentation/Widget/Register/signup_button.dart';
 import 'package:e_commerce_app/presentation/Widget/button.dart';
 import 'package:e_commerce_app/presentation/Widget/text.dart';
@@ -106,7 +107,15 @@ class Register extends StatelessWidget {
                       height: screenHeight * 0.07,
                       borderRadius: 10,
                       onPressed: () async {
-                        SignButton(context);
+                        if (formkey.currentState!.validate()) {
+      UserModel user = UserModel(
+        name: nameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        passwordAgain: passwordAgainController.text,
+      );
+      context.read<AuthBloc>().add(SignUpEvent(user: user));
+    }
                       },
                     ),
                     SizedBox(height: screenHeight * 0.03),

@@ -91,8 +91,9 @@ class Login extends StatelessWidget {
                           label: "Password",
                           prefixIcon: Icons.lock_outline_rounded,
                           obscureText: isObscure,
-                          sufixIcon:
-                              isObscure ? Icons.visibility_off : Icons.visibility,
+                          sufixIcon: isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           validator: (value) =>
                               Validator.validatePassword(value)),
                       SizedBox(height: screenHeight * 0.025),
@@ -104,43 +105,62 @@ class Login extends StatelessWidget {
                         borderRadius: 10,
                         onPressed: () async {
                           if (formkey.currentState!.validate()) {
-                      UserModel user = UserModel(
-                        email: emailController.text.trim(),
-                        password: passWordController.text.trim(),
-                      );
-                      context.read<AuthBloc>().add(SignInEvent(
-                          email: emailController.text,
-                          password: passWordController.text));
-                    }
+                            UserModel user = UserModel(
+                              email: emailController.text.trim(),
+                              password: passWordController.text.trim(),
+                            );
+                            context.read<AuthBloc>().add(SignInEvent(
+                                email: emailController.text,
+                                password: passWordController.text));
+                          }
                         },
                       ),
-                     TextCustom(
-                              text: "OR",
-                              fontSize: screenWidth * 0.04,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.kgreylight,
+                      TextCustom(
+                        text: "OR",
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.kgreylight,
+                      ),
+                      SizedBox(height: screenHeight * 0.025),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.read<AuthBloc>().add(GoogleSignInEvent());
+                            },
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/google.png",
+                                  width: 24,
+                                  height: 24,
+                                  fit: BoxFit.contain,
+                                ),
+                                SizedBox(width: 8),
+                                TextCustom(
+                                  text: "Login with Google",
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.kgreylight,
+                                ),
+                              ],
                             ),
-                            SizedBox(height: screenHeight * 0.025),
-                            TextCustom(
-                              onTap: () {
-                                  context.read<AuthBloc>().add(GoogleSignInEvent());
-                              },
-                              text: "Login with Google",
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.kgreylight,
-                            ),
-                            SizedBox(height: screenHeight * 0.025),
-                            TextCustom(
-                              onTap: () => Navigator.pushNamed(context, "/Recovery"),
-                              text: "Forgot Password",
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primarycolor,
-                            ),
-                            SizedBox(height: screenHeight * 0.025),
-                           Registered(screenHeight: screenHeight, screenWidth: screenWidth),
-                            SizedBox(height: screenHeight * 0.025),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: screenHeight * 0.025),
+                      TextCustom(
+                        onTap: () => Navigator.pushNamed(context, "/Recovery"),
+                        text: "Forgot Password",
+                        fontSize: screenWidth * 0.045,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primarycolor,
+                      ),
+                      SizedBox(height: screenHeight * 0.025),
+                      Registered(
+                          screenHeight: screenHeight, screenWidth: screenWidth),
+                      SizedBox(height: screenHeight * 0.025),
                     ],
                   ),
                 ),
@@ -151,6 +171,4 @@ class Login extends StatelessWidget {
       },
     );
   }
-
-  
 }

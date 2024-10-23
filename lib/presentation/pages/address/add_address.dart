@@ -23,9 +23,8 @@ class AddAddress extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(192, 42, 219, 1),
-        title: Center(
-          child: TextCustom(text: "Add Delivery Address"),
-        ),
+        title: TextCustom(text: "Add Delivery Address"),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

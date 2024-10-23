@@ -17,7 +17,7 @@ class Registered extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: screenHeight * 0.075),
+        SizedBox(width: screenHeight * 0.08),
         TextCustom(
                       text: "Don’t have an account? ",
                       fontSize: screenWidth * 0.04,
