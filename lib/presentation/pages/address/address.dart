@@ -30,13 +30,16 @@ class _ShippedAddressState extends State<ShippedAddress> {
 
     return Scaffold(
       appBar: AppBar(
+         backgroundColor: const Color.fromRGBO(192, 42, 219, 1),
+        title: TextCustom(text: "Add Delivery Address"),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => AddAddress()));
             },
-            icon: const Icon(Icons.add, color: Colors.black),
+            icon: const Icon(Icons.add, color: Colors.black,size: 40,),
           )
         ],
       ),
@@ -57,7 +60,7 @@ class _ShippedAddressState extends State<ShippedAddress> {
             return const Center(
               child: Text(
                 "No addresses found",
-                style: TextStyle(color: Colors.red, fontSize: 24),
+                style: TextStyle(color: Colors.black, fontSize: 24),
               ),
             );
           }
@@ -140,7 +143,7 @@ class _ShippedAddressState extends State<ShippedAddress> {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        const SizedBox(height: 15),
+                                        const SizedBox(height: 10),
                                         TextCustom(
                                           text: "Ph: ${address.phone}",
                                           fontSize: 17,

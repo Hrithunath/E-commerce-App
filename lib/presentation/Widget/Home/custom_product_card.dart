@@ -19,46 +19,41 @@ class CustomProductCard extends StatelessWidget {
         width: 350,
         child: InkWell(
           onTap: onTap,
-          child: Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 250,
-                    child: Image.network(
-                      imageList[0],
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          'https://via.placeholder.com/100',
-                        );
-                      },
-                    ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 250,
+                  width: double.infinity,
+                  child: Image.network(
+                    imageList[0],
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.network(
+                        'https://via.placeholder.com/100',
+                      );
+                    },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 8),
-                  child: TextCustom(
-                    text: product1['productName'] ?? 'Unknown',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 8),
+                child: TextCustom(
+                  text: product1['productName'] ?? 'Unknown',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2, left: 8, bottom: 13),
-                  child: TextCustom(
-                    text: "₹${product1['price']}",
-                    fontSize: 19,
-                    color: AppColors.kgreen,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 2, left: 8, bottom: 13),
+                child: TextCustom(
+                  text: "₹${product1['price']}",
+                  fontSize: 19,
+                  color: AppColors.kgreen,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

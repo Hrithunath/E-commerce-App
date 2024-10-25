@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     return MultiRepositoryProvider(
        providers: [
         RepositoryProvider<CartRepository>(create: (context) => CartRepositoryImplementation(),),
-        // RepositoryProvider<FavouritesRepository>(create: (context) => FavouritesRepositoryImplementation())
+       
       ],
       child: MultiBlocProvider(
         providers: [

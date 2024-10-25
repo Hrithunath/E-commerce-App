@@ -16,17 +16,14 @@ class CustomProductCategory extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Card(
-                elevation: 3,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      'https://via.placeholder.com/100',
-                    );
-                  },
-                ),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.network(
+                    'https://via.placeholder.com/100',
+                  );
+                },
               ),
             ),
             Padding(

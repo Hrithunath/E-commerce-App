@@ -77,7 +77,7 @@ class Home extends StatelessWidget {
               const SizedBox(height: 25),
               // First Carousel (Promotional Banners)
               SizedBox(
-                height: 350,
+                height: 330,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
@@ -85,7 +85,7 @@ class Home extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.all(8),
                       child: Container(
-                        width: 380,
+                        width: 350,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                           image: DecorationImage(

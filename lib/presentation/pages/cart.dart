@@ -45,7 +45,7 @@ class Cart extends StatelessWidget {
                   final cartItems = state.cartItems;
 
                   if (cartItems.isEmpty) {
-                    TextCustom(text: "Cart is Empty");
+                    const TextCustom(text: "Cart is Empty");
                   }
 
                   return ListView.builder(

@@ -25,8 +25,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       await cartRepository.addToCart(event.productId, event.productName,
           event.productPrice, event.productQuantity, event.image,event.size,event.stock);
       final cartItems =
-          await cartRepository.fetchCart(); // Get updated cart directly
-      emit(CartLoadedState(cartItems)); // Emit the updated cart state
+          await cartRepository.fetchCart(); 
+      emit(CartLoadedState(cartItems)); 
     } catch (e) {
       emit(CartErrorState(errorMessage: e.toString()));
     }

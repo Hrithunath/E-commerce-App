@@ -271,7 +271,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     if (currentState is CartLoadedState) {
                       isProductAlreadyInCart = currentState.cartItems.any(
                         (item) =>
-                            item['productid'] ==
+                            item["productid"] ==
                             widget.productDetails["productid"],
                       );
                     }

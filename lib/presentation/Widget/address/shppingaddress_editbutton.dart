@@ -11,7 +11,7 @@ Row addressEditButton(double screenWidth, BuildContext context,
   return Row(
     children: [
       SizedBox(
-        height: 60,
+        height: 50,
         width: screenWidth * 0.2,
         child: ButtonCustomized(
           text: "Edit",
@@ -29,13 +29,22 @@ Row addressEditButton(double screenWidth, BuildContext context,
         ),
       ),
       const SizedBox(width: 25),
-      IconButton(
-        onPressed: () {
-          shippingAddressService.deleteAddress(address);
-          showSnackBarMessage(context, "Address Deleted", Colors.green);
-        },
-        icon: const Icon(Icons.delete_outline_sharp,
-            size: 35, color: Colors.grey),
+       SizedBox(
+        height: 50,
+        width: screenWidth * 0.25,
+        child: ButtonCustomized(
+          text: "Delete",
+          textStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            height: 10,
+          ),
+          color: AppColors.primarycolor,
+          onPressed: () {
+             shippingAddressService.deleteAddress(address);
+          },
+        ),
       ),
     ],
   );
