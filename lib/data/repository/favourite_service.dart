@@ -8,7 +8,7 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> addFavourite(FavouriteModel favourite) async {
+  Future<void> addFavouriteService(FavouriteModel favourite) async {
     User? user = _firebaseAuth.currentUser;
 
     if (user == null) {
@@ -31,7 +31,7 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
   }
 
   @override
-  Future<void> removeFavourite(String favouriteId) async {
+  Future<void> removeFavouriteService(String favouriteId) async {
     User? user = _firebaseAuth.currentUser;
 
     if (user == null) {
@@ -39,7 +39,8 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
           code: "USER_NOT_LOGGED_IN", message: "User must be logged in");
     }
     try {
-      await firestore.collection("users").doc(user.uid).collection("favourites").doc(favouriteId).delete();
+      await firestore.collection("users").doc(user.uid).collection("favourites").doc(favouriteId)
+      .delete();
     } catch (e) {
     
       print("Error removing favourite: $e");
@@ -50,7 +51,7 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
 }
 
   @override
-  Future<List<FavouriteModel>> getFavourite()async {
+  Future<List<FavouriteModel>> getFavouriteService()async {
     
      User? user = _firebaseAuth.currentUser;
 

@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/Theme/appcolors.dart';
+import 'package:e_commerce_app/data/repository/cart_service.dart';
 import 'package:e_commerce_app/domain/model/cart_model.dart';
 import 'package:e_commerce_app/domain/model/favourite_model.dart';
 import 'package:e_commerce_app/presentation/Widget/button.dart';
@@ -94,11 +95,12 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                                   String favouriteId = "fav_$productId";
                                   if (isFavourite) {
-                                    print(
-                                        "Removing favourite for product ID: $productId");
+                                   
                                     context
                                         .read<FavouriteBloc>()
                                         .add(RemoveFavouriteEvent(productId));
+                                         print(
+                                        "Removing favourite for product ID: $productId");
                                   } else {
                                     FavouriteModel newFavourite =
                                         FavouriteModel(
@@ -247,7 +249,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   height: 50,
                   width: 300,
                   borderRadius: 10,
-                  onPressed: () {
+                  onPressed: () async {
                     
                     bool validateSelection() {
                       if (selectedsize == null) {
@@ -262,25 +264,29 @@ class _ProductDetailsState extends State<ProductDetails> {
                     if (!validateSelection()) {
                       return;
                     }
-
+                   
                     final cartBloc = context.read<CartBloc>();
                     final currentState = cartBloc.state;
+                    final   CartRepositoryImplementation
+                     cartRepositoryImplementation = CartRepositoryImplementation();
+                    bool isProductAlreadyInCart = await cartRepositoryImplementation
+                    .isProductInCart(widget.productDetails["id"]);
 
-                    bool isProductAlreadyInCart = false;
-
-                    if (currentState is CartLoadedState) {
-                      isProductAlreadyInCart = currentState.cartItems.any(
-                        (item) =>
-                            item["productid"] ==
-                            widget.productDetails["productid"],
-                      );
-                    }
+                    // if (currentState is CartLoadedState) {
+                    //   isProductAlreadyInCart = currentState.cartItems.any(
+                    //     (item) =>
+                    //         item["productid"] ==
+                    //         widget.productDetails["productid"],
+                    //   );
+                    // }
 
                     if (isProductAlreadyInCart) {
                       showSnackBarMessage(context, "This product is already in the cart.", Colors.red);
                     
                       return;
                     }
+
+                    
 
                     final cartItem = CartModel(
                       productid: widget.productDetails["id"],

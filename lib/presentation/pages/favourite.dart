@@ -29,8 +29,8 @@ class Favourite extends StatelessWidget {
               children: [
                 Container(
                   color: Theme.of(context).appBarTheme.backgroundColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
                     child: TextCustom(
                       text: "My Favourite",
                       fontSize: 23,

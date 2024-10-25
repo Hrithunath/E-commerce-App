@@ -13,36 +13,38 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
   FavouriteBloc(this.favouriteRepository) : super(FavouriteInitial(const [])) {
     // Event handlers
     on<LoadFavouritesEvent>(loadFavourites);
-    on<AddFavouriteEvent>(addFavourite);
-    on<RemoveFavouriteEvent>(removeFavourite);
+    on<AddFavouriteEvent>(addFavourites);
+    on<RemoveFavouriteEvent>(removeFavourites);
   }
 
   Future<void> loadFavourites(LoadFavouritesEvent event, Emitter<FavouriteState> emit) async {
     emit(FavouriteLoading());
     try {
-      final favourites = await favouriteRepository.getFavourite();
+      final favourites = await favouriteRepository.getFavouriteService();
       emit(FavouriteLoaded(favourites));
     } catch (e) {
       emit(FavouriteError(message: e.toString()));
     }
   }
 
-  Future<void> addFavourite(AddFavouriteEvent event, Emitter<FavouriteState> emit) async {
+  Future<void> addFavourites(AddFavouriteEvent event, Emitter<FavouriteState> emit) async {
     emit(FavouriteLoading());
     try {
-      await favouriteRepository.addFavourite(event.favourite);
+      await favouriteRepository.addFavouriteService(event.favourite);
       emit(FavouriteAddedSuccess(event.favourite));
       
       add(LoadFavouritesEvent());
+
+
     } catch (e) {
       emit(FavouriteError(message: e.toString()));
     }
   }
 
-  Future<void> removeFavourite(RemoveFavouriteEvent event, Emitter<FavouriteState> emit) async {
+  Future<void> removeFavourites(RemoveFavouriteEvent event, Emitter<FavouriteState> emit) async {
     emit(FavouriteLoading());
     try {
-      await favouriteRepository.removeFavourite(event.favouriteId);
+      await favouriteRepository.removeFavouriteService(event.favouriteId);
       emit(FavouriteRemovedSuccess(event.favouriteId));
      
       add(LoadFavouritesEvent());
