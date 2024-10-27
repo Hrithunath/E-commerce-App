@@ -42,26 +42,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
   }
 
-//   Future<void> deleteCartItemEvent(
-//     DeleteCartItemEvent event, Emitter<CartState> emit) async {
-//   if (state is CartLoadedState) {
-//     final currentState = state as CartLoadedState;
-//     final updatedCartItems = List<Map<String, dynamic>>.from(currentState.cartItems);
 
-//     // Remove the cart item locally
-//     updatedCartItems.removeWhere((item) => item['productId'] == event.docId);
-
-//     // Emit the updated state with the remaining items
-//     emit(CartLoadedState(updatedCartItems));
-
-//     // Update the repository by deleting the item
-//     try {
-//       await cartRepository.deleteCartItem(event.docId);
-//     } catch (e) {
-//       emit(CartErrorState(errorMessage: e.toString()));
-//     }
-//   }
-// }
 
   Future<void> deleteCartItemEvent(
   DeleteCartItemEvent event, Emitter<CartState> emit) async {
@@ -69,27 +50,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     final currentState = state as CartLoadedState;
     final updatedCartItems = List<Map<String, dynamic>>.from(currentState.cartItems);
 
-    // Remove the cart item locally
+    
     updatedCartItems.removeWhere((item) => item['cartId'] == event.cartId);
 
-    // Emit the updated state with the remaining items temporarily (optional)
-    // This allows for immediate UI feedback while deletion is happening in the background.
+    
     emit(CartLoadedState(updatedCartItems));
 
     try {
-      // First delete the item from Firebase or your backend
+   
       await cartRepository.deleteCartItem(event.cartId);
 
-      // // After confirming deletion, re-fetch the cart items from the backend
-      // final fetchedCartItems = await cartRepository.fetchCart(); // Ensure this fetches updated data
-
-      // // Emit the new state with updated cart items
-      // emit(CartLoadedState(fetchedCartItems));
+      
     } catch (e) {
-      // Emit an error state if deletion fails
+      
       emit(CartErrorState(errorMessage: e.toString()));
 
-      // Optionally, re-fetch the cart items to restore the state before deletion
+      
       final fetchedCartItems = await cartRepository.fetchCart();
       emit(CartLoadedState(fetchedCartItems));
     }
@@ -102,16 +78,16 @@ void incrementQuantity(
     final currentState = state as CartLoadedState;
     final updatedCartItems = List<Map<String, dynamic>>.from(currentState.cartItems);
 
-    // Find the cart item to update
+    
     final index = updatedCartItems.indexWhere((item) => item['productId'] == event.productId);
     if (index != -1) {
-      // Update the quantity locally
+     
       final updatedItem = Map<String, dynamic>.from(updatedCartItems[index]);
-      int currentQuantity = updatedItem['count'] ?? 1; // Default to 1 if 'count' is null
+      int currentQuantity = updatedItem['count'] ?? 1; 
       updatedItem['count'] = currentQuantity + 1;
       updatedCartItems[index] = updatedItem;
 
-      // Emit the updated state
+      
       emit(CartLoadedState(updatedCartItems));
     }
   }
@@ -124,19 +100,19 @@ void decrementQuantity(
     final currentState = state as CartLoadedState;
     final updatedCartItems = List<Map<String, dynamic>>.from(currentState.cartItems);
 
-    // Find the cart item to update
+ 
     final index = updatedCartItems.indexWhere((item) => item['productId'] == event.productId);
     if (index != -1) {
-      // Update the quantity locally
+     
       final updatedItem = Map<String, dynamic>.from(updatedCartItems[index]);
-      int currentQuantity = updatedItem['count'] ?? 1; // Default to 1 if 'count' is null
+      int currentQuantity = updatedItem['count'] ?? 1; 
 
-      // Ensure quantity does not go below 1
+    
       if (currentQuantity > 1) {
         updatedItem['count'] = currentQuantity - 1;
         updatedCartItems[index] = updatedItem;
 
-        // Emit the updated state
+        
         emit(CartLoadedState(updatedCartItems));
       }
     }
@@ -146,8 +122,8 @@ void decrementQuantity(
   FutureOr<void> clearCart(event, Emitter<CartState> emit) async {
     emit(CartLoadingState());
     try {
-      await cartRepository.clearCart(); // Clear all items in the cart
-      emit(CartLoadedState([])); // Emit an empty cart state
+      await cartRepository.clearCart(); 
+      emit(CartLoadedState([])); 
     } catch (e) {
       emit(CartErrorState(errorMessage: e.toString()));
     }

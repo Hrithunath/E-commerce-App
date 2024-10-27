@@ -9,6 +9,8 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      // context.read<UserBloc>().add(Fetch);
+
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is SignOutSuccess) {
@@ -23,38 +25,57 @@ class Profile extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        String userName = 'Unknown';
+        String userEmail = 'No email available';
+
+        if (state is Authenticated) {
+          
+          if (state.user != null) {
+            userName = state.user?.displayName ?? 'Unknown';
+            userEmail = state.user?.email ?? 'No email available';
+            print('AuthenticatedState received with username: $userName, email: $userEmail'); // Improved logging
+          } else {
+            print('AuthenticatedState received but user is null');
+          }
+        } else {
+          print('Current state is not authenticated: ${state.runtimeType}');
+        }
+
         return SafeArea(
           child: Column(
             children: [
               Container(
                 color: AppColors.primarycolor,
                 padding: const EdgeInsets.all(20.0),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 25),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 25),
+                    const SizedBox(height: 30),
                     Row(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 30,
                           child: Icon(
                             Icons.person,
                             size: 50,
                           ),
                         ),
-                        SizedBox(width: 15),
+                        const SizedBox(width: 15),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Hrithunath',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                userName,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
                             ),
                             Text(
-                              'Hrithunath&777@gmail.com',
-                              style: TextStyle(
+                              userEmail,
+                              style: const TextStyle(
                                   color: Color.fromARGB(255, 200, 200, 200),
                                   fontSize: 15),
                             ),
@@ -62,7 +83,7 @@ class Profile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -76,4 +97,3 @@ class Profile extends StatelessWidget {
     );
   }
 }
-

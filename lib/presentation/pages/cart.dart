@@ -23,7 +23,7 @@ class Cart extends StatelessWidget {
           Container(
             color: Theme.of(context).appBarTheme.backgroundColor,
             padding: const EdgeInsets.all(16.0),
-            child: TextCustom(
+            child: const TextCustom(
               text: "My Cart",
               fontSize: 23,
               fontWeight: FontWeight.bold,
@@ -152,20 +152,21 @@ class Cart extends StatelessWidget {
                 BlocBuilder<CartBloc, CartState>(
                   builder: (context, state) {
                     final itemCount =
-                        state is CartLoadedState ? state.cartItems.length : 0;
+                        state is CartLoadedState ?  getTotalQuantity(state) : 0;
                     final totalSum =
                         state is CartLoadedState ? getTotalSum(state) : 0.0;
                     return ListTile(
                       title: TextCustom(text: "Items ($itemCount)"),
+                     
                       trailing: TextCustom(text: "₹$totalSum"),
                     );
                   },
                 ),
-                ListTile(
+                const ListTile(
                   title: TextCustom(text: "Shipping"),
                   trailing: TextCustom(text: "₹$shippingCharges"),
                 ),
-                ListTile(
+                const ListTile(
                   title: TextCustom(text: "Import charges"),
                   trailing: TextCustom(text: "₹$importCharges"),
                 ),
@@ -174,14 +175,14 @@ class Cart extends StatelessWidget {
                     final totalSum =
                         state is CartLoadedState ? getTotalSum(state) : 0.0;
                     return ListTile(
-                      title: TextCustom(
+                      title: const TextCustom(
                         text: "Total Price",
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
                       ),
                       trailing: TextCustom(
-                          text:
-                              "₹${totalSum + shippingCharges + importCharges}"),
+                     text:
+                     "₹${totalSum + shippingCharges + importCharges}"),
                     );
                   },
                 ),

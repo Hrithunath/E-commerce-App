@@ -2,7 +2,6 @@ import 'package:e_commerce_app/core/Theme/appcolors.dart';
 import 'package:e_commerce_app/core/constant/constant.dart';
 import 'package:e_commerce_app/core/utils/validator.dart';
 import 'package:e_commerce_app/domain/model/user_model.dart';
-import 'package:e_commerce_app/presentation/Widget/Register/signup_button.dart';
 import 'package:e_commerce_app/presentation/Widget/button.dart';
 import 'package:e_commerce_app/presentation/Widget/text.dart';
 import 'package:e_commerce_app/presentation/Widget/textFormFeild.dart';

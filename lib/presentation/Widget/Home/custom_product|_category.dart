@@ -9,20 +9,20 @@ class CustomProductCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SizedBox(
         width: 100,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.network(
-                    'https://via.placeholder.com/100',
-                  );
+              child: CircleAvatar(
+                radius: 34,
+              foregroundImage:  NetworkImage(
+                  imageUrl,
+                ),
+                // backgroundImage: const NetworkImage("https://via.placeholder.com/100"),
+                onForegroundImageError:(exception, stackTrace) {                 
                 },
               ),
             ),
@@ -30,8 +30,9 @@ class CustomProductCategory extends StatelessWidget {
               padding: const EdgeInsets.all(5.0),
               child: TextCustom(
                 text: category['categoryName'] ?? 'Unknown',
-                fontSize: 12,
+                fontSize: 15,
                 fontWeight: FontWeight.w800,
+                color: Colors.white,
               ),
             ),
           ],

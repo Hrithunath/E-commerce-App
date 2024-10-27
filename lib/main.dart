@@ -10,6 +10,7 @@ import 'package:e_commerce_app/presentation/bloc/cart/cart_bloc.dart';
 import 'package:e_commerce_app/presentation/bloc/favourite/favourite_bloc.dart';
 import 'package:e_commerce_app/presentation/pages/Home.Screen.dart';
 import 'package:e_commerce_app/presentation/pages/address/address.dart';
+import 'package:e_commerce_app/presentation/pages/newdesign.dart';
 import 'package:e_commerce_app/presentation/pages/home.dart';
 import 'package:e_commerce_app/presentation/pages/orders.dart';
 import 'package:e_commerce_app/presentation/pages/recovery.dart';
@@ -65,7 +66,7 @@ class _MyAppState extends State<MyApp> {
          ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            home:const SplashWrapper(),
+            home:SplashWrapper(),
             theme: ThemeData(primaryColor: Colors.pink),
             initialRoute: "/",
             routes: {

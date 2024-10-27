@@ -1,10 +1,10 @@
-part of 'user_bloc.dart';
+// part of 'user_bloc.dart';
 
-@immutable
-sealed class UserEvent {}
-class FetchUserDetails extends UserEvent {
+// @immutable
+// sealed class UserEvent {}
+// class FetchUserDetails extends UserEvent {
   
- final String userId;
+//  final String userId;
 
-  FetchUserDetails({required this.userId});
-}
+//   FetchUserDetails({required this.userId});
+// }
