@@ -14,7 +14,7 @@ class MyOrders extends StatelessWidget {
             Container(
               color: Theme.of(context).appBarTheme.backgroundColor,
               padding: const EdgeInsets.all(16.0),
-              child: TextCustom(
+              child: const TextCustom(
                 text: "My Orders",
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
@@ -53,7 +53,7 @@ class MyOrders extends StatelessWidget {
                             SizedBox(width: 17),
                           ],
                         ),
-                        subtitle: Row(
+                        subtitle: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextCustom(

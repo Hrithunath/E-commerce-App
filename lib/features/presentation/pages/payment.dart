@@ -9,13 +9,12 @@ class FlipCardAnimation extends StatefulWidget {
 }
 
 class _FlipCardAnimationState extends State<FlipCardAnimation> {
-  final List<bool> isFlippedList = List.generate(3, (_) => false); // Adjust the number of notes
+  final List<bool> isFlippedList =
+      List.generate(3, (_) => false); // Adjust the number of notes
   final int milliseconds = 1000;
 
-  // List of notes
   final List<String> noteList = [
     'Week24',
-    
   ];
 
   @override
@@ -37,7 +36,8 @@ class _FlipCardAnimationState extends State<FlipCardAnimation> {
               },
               child: AnimatedContainer(
                 transformAlignment: Alignment.center,
-                transform: Matrix4.rotationY(isFlippedList[index] ? math.pi : 0),
+                transform:
+                    Matrix4.rotationY(isFlippedList[index] ? math.pi : 0),
                 duration: Duration(milliseconds: milliseconds),
                 height: screenHeight * 0.5,
                 width: screenWidth * 0.8,

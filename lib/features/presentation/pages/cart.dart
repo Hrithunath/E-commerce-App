@@ -110,11 +110,11 @@ class Cart extends StatelessWidget {
                                     IconButton(
                                       onPressed: () {
                                         context.read<CartBloc>().add(
-                                            IncrementQuantityEvent(
+                                            DecrementQuantityEvent(
                                                 productId:
                                                     cartItem['productId']));
                                       },
-                                      icon: const Icon(Icons.add),
+                                      icon: const Icon(Icons.remove),
                                     ),
                                     TextCustom(
                                         text: cartItem['count']?.toString() ??
@@ -122,11 +122,11 @@ class Cart extends StatelessWidget {
                                     IconButton(
                                       onPressed: () {
                                         context.read<CartBloc>().add(
-                                            DecrementQuantityEvent(
+                                            IncrementQuantityEvent(
                                                 productId:
                                                     cartItem['productId']));
                                       },
-                                      icon: const Icon(Icons.remove),
+                                      icon: const Icon(Icons.add),
                                     ),
                                   ],
                                 ),

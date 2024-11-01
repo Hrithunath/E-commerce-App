@@ -23,7 +23,7 @@ class CustomProductCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               // border: Border.all(color: Colors.black54),
               borderRadius: BorderRadius.all(Radius.circular(17)),

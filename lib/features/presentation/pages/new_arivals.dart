@@ -4,13 +4,13 @@ import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.d
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
 
-class Topcollections extends StatelessWidget {
-  const Topcollections({super.key});
+class NewArivals extends StatelessWidget {
+  const NewArivals({super.key});
 
-  Future<List<Map<String, dynamic>>> fetchTopCollections() async {
+  Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
     var products = await fetchProducts();
     return products
-        .where((product) => product['isTopCollection'] == true)
+        .where((product) => product['isNewArrival'] == true)
         .toList();
   }
 
@@ -26,10 +26,10 @@ class Topcollections extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Top Collection'),
+        title: const Text('New Arrivals'),
       ),
       body: FutureBuilder(
-        future: fetchTopCollections(),
+        future: fetchNewArrivals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -46,8 +46,8 @@ class Topcollections extends StatelessWidget {
               mainAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
-              var product1 = topCollections[index];
-              List<dynamic> imageList = product1['uploadImages'] ??
+              var product2 = topCollections[index];
+              List<dynamic> imageList = product2['uploadImages'] ??
                   ['https://via.placeholder.com/100'];
               return Card(
                 elevation: 5,
@@ -67,10 +67,10 @@ class Topcollections extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextCustom(
-                              text: product1['productName'] ?? "No Name"),
+                              text: product2['productName'] ?? "No Name"),
                           TextCustom(
                               text:
-                                  "₹${product1['price']?.toString() ?? "No Price"}"),
+                                  "₹${product2['price']?.toString() ?? "No Price"}"),
                         ],
                       ),
                     ),

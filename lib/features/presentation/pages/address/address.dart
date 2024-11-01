@@ -31,8 +31,11 @@ class _ShippedAddressState extends State<ShippedAddress> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(192, 42, 219, 1),
-        title: TextCustom(text: "Add Delivery Address"),
+        backgroundColor: AppColors.primarycolor,
+        title: const TextCustom(
+          text: "Add Address",
+          color: Colors.white,
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -42,7 +45,7 @@ class _ShippedAddressState extends State<ShippedAddress> {
             },
             icon: const Icon(
               Icons.add,
-              color: Colors.black,
+              color: Colors.white,
               size: 40,
             ),
           )

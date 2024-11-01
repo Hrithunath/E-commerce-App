@@ -61,7 +61,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     ? Icons.favorite
                                     : Icons.favorite_border,
                                 color:
-                                    isFavourite ? AppColors.kred : Colors.grey,
+                                    isFavourite ? AppColors.kred : Colors.white,
                                 size: 30,
                               ),
                               onPressed: () {
@@ -222,7 +222,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       fontSize: 17,
                     ),
                     TextCustom(
-                      text: "${widget.productDetails["category"]}",
+                      text: "${widget.productDetails["categoryName"]}",
                       fontSize: 16,
                       color: AppColors.kgrey,
                     ),

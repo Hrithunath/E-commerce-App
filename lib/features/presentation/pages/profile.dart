@@ -25,8 +25,8 @@ class Profile extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        String userName = 'Unknown';
-        String userEmail = 'No email available';
+        String userName = 'Hrithunath';
+        String userEmail = 'hrithunath777@gmail.com';
 
         if (state is Authenticated) {
           if (state.user != null) {

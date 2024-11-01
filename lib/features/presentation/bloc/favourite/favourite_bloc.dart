@@ -44,7 +44,10 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
       RemoveFavouriteEvent event, Emitter<FavouriteState> emit) async {
     emit(FavouriteLoading());
     try {
+      final favouriteId = event.favouriteId;
+      print("Removing favourite with ID: $favouriteId");
       await favouriteRepository.removeFavouriteService(event.favouriteId);
+
       emit(FavouriteRemovedSuccess(event.favouriteId));
 
       add(LoadFavouritesEvent());

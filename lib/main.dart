@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: SplashWrapper(),
+            home: const SplashWrapper(),
             theme: ThemeData(primaryColor: Colors.pink),
             initialRoute: "/",
             routes: {

@@ -11,12 +11,12 @@ class UserRepositoryImplementation implements UserRepository {
     if (user == null) {
       throw Exception('No user signed in');
     }
-
+    print('Current user UID: ${user.uid}');
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .get();
-
+    print('User document exists: ${userDoc.exists}');
     if (!userDoc.exists) {
       throw Exception('User not found in Firestore');
     }

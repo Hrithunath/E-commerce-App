@@ -10,7 +10,7 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
   @override
   Future<void> addFavouriteService(FavouriteModel favourite) async {
     User? user = _firebaseAuth.currentUser;
-
+    print("Adding favourite for user: ${user?.uid}");
     if (user == null) {
       throw FirebaseAuthException(
           code: "USER_NOT_LOGGED_IN", message: "User must be logged in");
@@ -42,12 +42,26 @@ class FavouritesRepositoryImplementation implements FavouriteRepository {
           code: "USER_NOT_LOGGED_IN", message: "User must be logged in");
     }
     try {
+      // Check if the document exists before attempting to delete
+      DocumentSnapshot snapshot = await firestore
+          .collection("users")
+          .doc(user.uid)
+          .collection("favourites")
+          .doc(favouriteId)
+          .get();
+
+      if (!snapshot.exists) {
+        print("Favourite with ID: $favouriteId does not exist.");
+        return; // Or throw an exception if needed
+      }
+
       await firestore
           .collection("users")
           .doc(user.uid)
           .collection("favourites")
           .doc(favouriteId)
           .delete();
+      print("Successfully removed favourite with ID: $favouriteId");
     } catch (e) {
       print("Error removing favourite: $e");
       rethrow;

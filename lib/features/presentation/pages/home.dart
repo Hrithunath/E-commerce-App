@@ -8,6 +8,7 @@ import 'package:e_commerce_app/features/presentation/Widget/Home/custom_text_row
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
+import 'package:e_commerce_app/features/presentation/pages/new_arivals.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:e_commerce_app/features/presentation/pages/topcollections.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,7 @@ class Home extends StatelessWidget {
                           fillColor: Colors.white,
                           hintText: "Search Product",
                           prefixIcon: Icons.search,
+                          onChanged: (value) {},
                         ),
                       ),
                     ],
@@ -159,7 +161,7 @@ class Home extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           // First Carousel (Promotional Banners)
@@ -177,20 +179,14 @@ class Home extends StatelessWidget {
                       color: Colors.grey[300],
                     ),
                   );
-                }
-                // Handle error state
-                else if (snapshot.hasError) {
+                } else if (snapshot.hasError) {
                   return Text("Error: ${snapshot.error}");
-                }
-                // Handle empty data state
-                else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Text("No banners found");
                 }
 
-                // Extract banner data
                 var banners = snapshot.data!;
 
-                // Create the CarouselSlider
                 return CarouselSlider(
                   items: banners.map((banner) {
                     String imageUrl = banner['imageurl'] ??
@@ -198,7 +194,7 @@ class Home extends StatelessWidget {
                     print('Image URL: $imageUrl');
 
                     return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 7),
+                      margin: const EdgeInsets.symmetric(horizontal: 7),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius:
@@ -212,9 +208,9 @@ class Home extends StatelessWidget {
                   }).toList(),
                   options: CarouselOptions(
                     height: 330,
-                    autoPlay: false,
+                    autoPlay: true,
                     autoPlayInterval: const Duration(seconds: 3),
-                    enlargeCenterPage: false,
+                    enlargeCenterPage: true,
                     aspectRatio: 16 / 9,
                   ),
                 );
@@ -225,13 +221,13 @@ class Home extends StatelessWidget {
           const SizedBox(height: 20),
           // Second Carousel Top collection
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: CustomTextRow(
               leading: "Popular Collections",
               trailing: "See More",
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Topcollections()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Topcollections()));
               },
             ),
           ),
@@ -280,11 +276,14 @@ class Home extends StatelessWidget {
           ),
           // New Arrivals Section
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: CustomTextRow(
               leading: "New Arrivals",
               trailing: "See More",
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NewArivals()));
+              },
             ),
           ),
           FutureBuilder<List<Map<String, dynamic>>>(
