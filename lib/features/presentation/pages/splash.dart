@@ -21,9 +21,9 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is Authenticated) {
+          if (state is AuthenticatedState) {
             Navigator.pushReplacementNamed(context, "/HomeBottom");
-          } else if (state is UnAuthenticated) {
+          } else if (state is UnAuthenticatedState) {
             Navigator.pushReplacementNamed(context, "/Login");
           }
         },

@@ -37,7 +37,7 @@ class Register extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is Authenticated) {
+      if (state is AuthenticatedState) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushNamedAndRemoveUntil(
               context, "/HomeBottom", (route) => false);

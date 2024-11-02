@@ -67,10 +67,16 @@ class Topcollections extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextCustom(
-                              text: product1['productName'] ?? "No Name"),
+                            text: product1['productName'] ?? "No Name",
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
                           TextCustom(
-                              text:
-                                  "₹${product1['price']?.toString() ?? "No Price"}"),
+                            text:
+                                "₹${product1['price']?.toString() ?? "No Price"}",
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ],
                       ),
                     ),

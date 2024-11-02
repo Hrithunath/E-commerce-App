@@ -37,20 +37,21 @@ class Login extends StatelessWidget {
     final screenHeight = mediaQuery.size.height;
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is Authenticated) {
+        if (state is AuthenticatedState) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('User authenticated successfully!')),
           );
           Navigator.pushNamedAndRemoveUntil(
               context, "/HomeBottom", (route) => false);
-        } else if (state is UnAuthenticated) {
+        } else if (state is UnAuthenticatedState) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text('User not authenticated. Please log in.')),
           );
-        } else if (state is AuthenticatedError) {
+        } else if (state is AuthErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Authentication error: ${state.message}')),
+            SnackBar(
+                content: Text('Authentication error: ${state.errorMessage}')),
           );
         }
       },
@@ -109,7 +110,7 @@ class Login extends StatelessWidget {
                               email: emailController.text.trim(),
                               password: passWordController.text.trim(),
                             );
-                            context.read<AuthBloc>().add(SignInEvent(
+                            context.read<AuthBloc>().add(LoginEvent(
                                 email: emailController.text,
                                 password: passWordController.text));
                           }

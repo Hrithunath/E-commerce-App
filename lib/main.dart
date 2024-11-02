@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/features/data/repository/cart_service.dart';
 import 'package:e_commerce_app/features/data/repository/favourite_service.dart';
 import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
+import 'package:e_commerce_app/features/presentation/pages/checkout.dart';
 import 'package:e_commerce_app/firebase_options.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/address_checkbox/address_checkbox_bloc.dart';
@@ -65,7 +66,7 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: const SplashWrapper(),
+            home: SplashWrapper(),
             theme: ThemeData(primaryColor: Colors.pink),
             initialRoute: "/",
             routes: {

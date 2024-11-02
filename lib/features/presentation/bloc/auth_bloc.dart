@@ -1,7 +1,128 @@
+// import 'package:bloc/bloc.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:e_commerce_app/features/domain/model/user_model.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:meta/meta.dart';
+
+// part 'auth_event.dart';
+// part 'auth_state.dart';
+
+// class AuthBloc extends Bloc<AuthEvent, AuthState> {
+//   final FirebaseAuth auth = FirebaseAuth.instance;
+
+//   AuthBloc() : super(AuthInitial()) {
+//     on<CheckLoginStatusEvent>((event, emit) async {
+//       User? user;
+//       try {
+//         await Future.delayed(const Duration(seconds: 2), () {
+//           user = auth.currentUser;
+//         });
+
+//         if (user != null) {
+//           emit(Authenticated(user));
+//         } else {
+//           emit(UnAuthenticated());
+//         }
+//       } catch (e) {
+//         emit(AuthenticatedError(message: e.toString()));
+//       }
+//     });
+
+//     on<SignUpEvent>((event, emit) async {
+//       emit(AuthLoading());
+//       try {
+//         final UserCredential = await auth.createUserWithEmailAndPassword(
+//             email: event.user.email.toString(),
+//             password: event.user.password.toString());
+
+//         final user = UserCredential.user;
+
+//         if (user != null) {
+//           FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+//             "uid": user.uid,
+//             "email": user.email,
+//             "name": event.user.name,
+//             "createdAt": DateTime.now(),
+//           });
+//           emit(Authenticated(user));
+//         } else {
+//           emit(UnAuthenticated());
+//         }
+//       } catch (e) {
+//         emit(AuthenticatedError(message: e.toString()));
+//       }
+//     });
+
+//     on<SignInEvent>((event, emit) async {
+//       emit(AuthLoading());
+
+//       try {
+//         final UserCredential = await auth.signInWithEmailAndPassword(
+//             email: event.email, password: event.password);
+//         final user = UserCredential.user;
+
+//         if (user != null) {
+//           emit(Authenticated(user));
+//         } else {
+//           emit(UnAuthenticated());
+//         }
+//       } catch (e) {
+//         emit(AuthenticatedError(message: e.toString()));
+//       }
+//     });
+
+//     on<GoogleSignInEvent>((event, emit) async {
+//       emit(AuthLoading());
+//       try {
+//         final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+//         print("print from signin Event${googleUser!.displayName}");
+
+//         final googleAuth = await googleUser.authentication;
+//         final credential = GoogleAuthProvider.credential(
+//           accessToken: googleAuth.accessToken,
+//           idToken: googleAuth.idToken,
+//         );
+
+//         final UserCredential userCredential =
+//             await auth.signInWithCredential(credential);
+//         final user = userCredential.user;
+
+//         if (user != null) {
+//           FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+//             "uid": user.uid,
+//             "email": user.email,
+//             "name": user.displayName ?? "Unknown",
+//             "createdAt": DateTime.now(),
+//           });
+//           emit(Authenticated(user));
+//         } else {
+//           emit(UnAuthenticated());
+//         }
+//       } catch (e) {
+//         emit(AuthenticatedError(message: e.toString()));
+//       }
+//     });
+
+//     on<LogoutEvent>(
+//       (event, emit) async {
+//         try {
+//           await auth.signOut();
+//           emit(SignOutSuccess());
+//         } catch (e) {
+//           emit(AuthenticatedError(message: e.toString()));
+//         }
+//       },
+//     );
+//   }
+// }
+import 'dart:async';
 import 'package:bloc/bloc.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/domain/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
@@ -9,110 +130,192 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  User? user;
 
   AuthBloc() : super(AuthInitial()) {
-    on<CheckLoginStatusEvent>((event, emit) async {
-      User? user;
-      try {
-        await Future.delayed(const Duration(seconds: 2), () {
-          user = auth.currentUser;
+    on<CheckLoginStatusEvent>(checkLoginStatusEvent);
+    on<LoginEvent>(loginEvent);
+    on<SignUpEvent>(signUpEvent);
+    on<LogoutEvent>(logoutEvent);
+    on<GoogleSignInEvent>(googleSignInEvent);
+  }
+
+  FutureOr<void> checkLoginStatusEvent(
+      CheckLoginStatusEvent event, Emitter<AuthState> emit) async {
+    try {
+      user = _auth.currentUser;
+
+      if (user != null) {
+        // Fetch additional user data from Firestore
+        final DocumentSnapshot<Map<String, dynamic>> userData =
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(user!.uid)
+                .get(const GetOptions(
+                    source: Source.server)); // Force fetch from server
+
+        if (userData.exists) {
+          final String? username = userData.data()?["name"];
+          final String? email = userData.data()?["email"];
+
+          emit(AuthenticatedState(
+            user: user,
+            username: username,
+            email: email,
+          ));
+        } else {
+          emit(AuthenticatedState(user: user));
+        }
+      } else {
+        emit(UnAuthenticatedState());
+      }
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  FutureOr<void> signUpEvent(SignUpEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoadingState());
+
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+          email: event.user.email.toString(),
+          password: event.user.password.toString());
+
+      final user = userCredential.user;
+      if (user != null) {
+        await user.sendEmailVerification();
+        FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+          "uid": user.uid,
+          "email": user.email,
+          "name": event.user.name,
+          "createdAt": DateTime.now(),
         });
-
-        if (user != null) {
-          emit(Authenticated(user));
-        } else {
-          emit(UnAuthenticated());
-        }
-      } catch (e) {
-        emit(AuthenticatedError(message: e.toString()));
+        emit(AuthenticatedState(user: user));
+      } else {
+        emit(UnAuthenticatedState());
       }
-    });
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+    }
+  }
 
-    on<SignUpEvent>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        final UserCredential = await auth.createUserWithEmailAndPassword(
-            email: event.user.email.toString(),
-            password: event.user.password.toString());
+  FutureOr<void> logoutEvent(LogoutEvent event, Emitter<AuthState> emit) async {
+    try {
+      await _auth.signOut();
+      emit(UnAuthenticatedState());
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+    }
+  }
 
-        final user = UserCredential.user;
+  FutureOr<void> loginEvent(LoginEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoadingState());
 
-        if (user != null) {
-          FirebaseFirestore.instance.collection("users").doc(user.uid).set({
-            "uid": user.uid,
-            "email": user.email,
-            "name": event.user.name,
-            "createdAt": DateTime.now(),
-          });
-          emit(Authenticated(user));
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+          email: event.email, password: event.password);
+      final user = userCredential.user;
+
+      if (user != null) {
+        // Fetch additional user data from Firestore
+        final DocumentSnapshot<Map<String, dynamic>> userData =
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(user.uid)
+                .get();
+
+        if (userData.exists) {
+          // Extract user details from the document
+          final String? username = userData.data()?["name"];
+          final String? email = userData.data()?["email"];
+
+          print('inside login $username : $email');
+
+          // Emit the authenticated state with user details
+          emit(
+              AuthenticatedState(user: user, username: username, email: email));
         } else {
-          emit(UnAuthenticated());
+          emit(AuthenticatedState(user: user)); // No additional data found
         }
-      } catch (e) {
-        emit(AuthenticatedError(message: e.toString()));
+      } else {
+        emit(UnAuthenticatedState());
       }
-    });
-
-    on<SignInEvent>((event, emit) async {
-      emit(AuthLoading());
-
-      try {
-        final UserCredential = await auth.signInWithEmailAndPassword(
-            email: event.email, password: event.password);
-        final user = UserCredential.user;
-
-        if (user != null) {
-          emit(Authenticated(user));
-        } else {
-          emit(UnAuthenticated());
-        }
-      } catch (e) {
-        emit(AuthenticatedError(message: e.toString()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        emit(AuthErrorState(errorMessage: 'No user found for that email.'));
+      } else if (e.code == 'wrong-password') {
+        emit(AuthErrorState(errorMessage: 'Wrong password provided.'));
+      } else {
+        emit(AuthErrorState(errorMessage: 'Firebase Auth error: ${e.message}'));
       }
-    });
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+    }
+  }
 
-    on<GoogleSignInEvent>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-        print("print from signin Event${googleUser!.displayName}");
-
-        final googleAuth = await googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
+  FutureOr<void> googleSignInEvent(
+      GoogleSignInEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoadingState());
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        // retrieves the authentication tokens (ID token and access token) for the signed-in Google user.
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-
         final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
+            await _auth.signInWithCredential(credential);
         final user = userCredential.user;
 
         if (user != null) {
-          FirebaseFirestore.instance.collection("users").doc(user.uid).set({
-            "uid": user.uid,
-            "email": user.email,
-            "name": user.displayName ?? "Unknown",
-            "createdAt": DateTime.now(),
-          });
-          emit(Authenticated(user));
-        } else {
-          emit(UnAuthenticated());
-        }
-      } catch (e) {
-        emit(AuthenticatedError(message: e.toString()));
-      }
-    });
+          final username = user.displayName ?? 'Guest';
+          final email = user.email ?? 'No email provided';
+          final phone = user.phoneNumber ?? '';
 
-    on<LogoutEvent>(
-      (event, emit) async {
-        try {
-          await auth.signOut();
-          emit(SignOutSuccess());
-        } catch (e) {
-          emit(AuthenticatedError(message: e.toString()));
+          // Add more detailed logging here
+          print('User object is not null');
+          print('Username: $username');
+          print('Email: $email');
+
+          // Save user details to Firestore
+          final userDoc =
+              FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+          // Check if user document already exists
+          final userSnapshot = await userDoc.get();
+          if (!userSnapshot.exists) {
+            // If not, create a new document
+            await userDoc.set({
+              'uid': user.uid,
+              'email': email,
+              'name': username,
+              'phoneNumber': phone,
+              'createdAt':
+                  DateTime.now(), // Save the timestamp of user creation
+              // Add any other fields you want to store
+            });
+
+            print('User details saved to Firestore.');
+          } else {
+            print('User already exists in Firestore.');
+          }
+
+          emit(AuthenticatedState(username: username, email: email));
+        } else {
+          print('Google Sign-In failed: User object is null');
+          emit(UnAuthenticatedState());
         }
-      },
-    );
+      } else {
+        emit(UnAuthenticatedState());
+      }
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+    }
   }
 }

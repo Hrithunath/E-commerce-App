@@ -60,8 +60,8 @@ class CustomProductCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8, left: 8),
                   child: TextCustom(
                     text: product1['productName'] ?? 'Unknown',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 Padding(
@@ -69,7 +69,7 @@ class CustomProductCard extends StatelessWidget {
                   child: TextCustom(
                     text: "₹${product1['price']}",
                     fontSize: 19,
-                    color: AppColors.kgreen,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],

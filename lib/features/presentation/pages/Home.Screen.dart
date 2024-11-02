@@ -19,7 +19,7 @@ class _HomeBottomnavigationState extends State<HomeBottomnavigation> {
     const Home(),
     const Cart(),
     const Favourite(),
-    const Profile(),
+    Profile(),
   ];
 
   @override

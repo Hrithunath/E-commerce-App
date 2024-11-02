@@ -89,6 +89,41 @@ class Home extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
+                // TextCustom(
+                //   text: '', // Initial empty text; updated below
+                //   fontSize: 20,
+                //   fontWeight: FontWeight.bold,
+                //   color: Colors.white,
+                // ),
+
+                // // Use BlocBuilder to update the text
+                // BlocBuilder<AuthBloc, AuthState>(
+                //   builder: (context, state) {
+                //     if (state is AuthLoading) {
+                //       return const CircularProgressIndicator();
+                //     }
+
+                //     if (state is Authenticated) {
+                //       // Display user's name if available
+                //       final userdetails = state.user!;
+                //       print(userdetails);
+                //       final userName = userdetails.displayName;
+                //       return TextCustom(
+                //         text: userName!,
+                //         fontSize: 20,
+                //         fontWeight: FontWeight.bold,
+                //         color: Colors.white,
+                //       );
+                //     }
+
+                //     return const TextCustom(
+                //       text: 'User not logged in',
+                //       fontSize: 20,
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.white,
+                //     );
+                //   },
+                // ),
 
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -210,7 +245,7 @@ class Home extends StatelessWidget {
                     height: 330,
                     autoPlay: true,
                     autoPlayInterval: const Duration(seconds: 3),
-                    enlargeCenterPage: true,
+                    enlargeCenterPage: false,
                     aspectRatio: 16 / 9,
                   ),
                 );
@@ -330,6 +365,19 @@ class Home extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget Appbar() {
+    return const CustomAppbar(
+      title: TextCustom(
+          text: "Good day for shopping", fontSize: 14, color: Colors.white),
+      subtitle: TextCustom(
+        text: "Hrithunath",
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
       ),
     );
   }
