@@ -8,6 +8,7 @@ import 'package:e_commerce_app/features/presentation/Widget/Home/custom_text_row
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/new_arivals.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:e_commerce_app/features/presentation/pages/topcollections.dart';
@@ -135,7 +136,19 @@ class Home extends StatelessWidget {
                           fillColor: Colors.white,
                           hintText: "Search Product",
                           prefixIcon: Icons.search,
-                          onChanged: (value) {},
+                          onChanged: (query) {
+                            if (query.isEmpty) {
+                              // Emit an empty search query to revert to the default product list
+                              context
+                                  .read<ProductSearchBloc>()
+                                  .add(SearchByProductEvent(query: query));
+                            } else {
+                              // Trigger search when query is not empty
+                              context
+                                  .read<ProductSearchBloc>()
+                                  .add(SearchByProductEvent(query: query));
+                            }
+                          },
                         ),
                       ),
                     ],

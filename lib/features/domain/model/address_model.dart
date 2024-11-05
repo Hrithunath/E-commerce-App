@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddressModel {
   final String id;
-  final String name;  // Changed from username to name
+  final String name;
   final String address;
   final String pincode;
   final String state;
@@ -10,7 +10,7 @@ class AddressModel {
 
   AddressModel({
     required this.id,
-    required this.name,  // Updated the constructor
+    required this.name,
     required this.address,
     required this.pincode,
     required this.state,
@@ -20,7 +20,7 @@ class AddressModel {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "name": name,  
+      "name": name,
       "address": address,
       "pincode": pincode,
       "state": state,
@@ -33,7 +33,7 @@ class AddressModel {
 
     return AddressModel(
       id: doc.id,
-      name: json["name"] ?? 'No Name',  // Updated to match field name
+      name: json["name"] ?? 'No Name',
       address: json["address"] ?? 'No Address',
       pincode: json["pincode"] ?? 'No Pincode',
       state: json["state"] ?? 'No State',

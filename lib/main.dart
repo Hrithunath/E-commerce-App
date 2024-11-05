@@ -77,7 +77,9 @@ class _MyAppState extends State<MyApp> {
               "/Home": (context) => const HomeWrapper(),
               "/HomeBottom": (context) => const HomeBottomnavigation(),
               "/MyOrders": (context) => const MyOrders(),
-              "/ShippedAddress": (context) => ShippedAddress(userId: userId),
+              "/ShippedAddress": (context) => ShippedAddress(
+                    userId: userId,
+                  ),
             }),
       ),
     );

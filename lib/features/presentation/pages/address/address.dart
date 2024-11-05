@@ -7,23 +7,23 @@ import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_scaffold_messenger.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/address_checkbox/address_checkbox_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/cart/cart_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/address/add_address.dart';
-import 'package:e_commerce_app/features/presentation/pages/payment.dart';
+import 'package:e_commerce_app/features/presentation/pages/checkout.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // Import for Bloc
 
-class ShippedAddress extends StatefulWidget {
+class ShippedAddress extends StatelessWidget {
   final String userId;
+  Map<String, Object>? cartData;
+  late AddressModel address;
+  ShippedAddress({super.key, required this.userId, this.cartData});
 
-  const ShippedAddress({super.key, required this.userId});
-
-  @override
-  State<ShippedAddress> createState() => _ShippedAddressState();
-}
-
-class _ShippedAddressState extends State<ShippedAddress> {
   @override
   Widget build(BuildContext context) {
+    final cartData =
+        ModalRoute.of(context)!.settings.arguments as Map<String, Object>?;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -52,7 +52,7 @@ class _ShippedAddressState extends State<ShippedAddress> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: shippingAddressService.fetchAddress(widget.userId),
+        stream: shippingAddressService.fetchAddress(userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -90,13 +90,11 @@ class _ShippedAddressState extends State<ShippedAddress> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               var addressDoc = addressDocs[index];
-                              var address =
-                                  AddressModel.fromFirestore(addressDoc);
-                              var documentId =
-                                  addressDoc.id; // Get the document ID for Bloc
+                              address = AddressModel.fromFirestore(addressDoc);
+                              var documentId = addressDoc.id;
 
                               return SizedBox(
-                                height: screenHeight * 0.35,
+                                height: screenHeight * 0.310,
                                 width: double.infinity,
                                 child: Card(
                                   elevation: 7,
@@ -106,7 +104,7 @@ class _ShippedAddressState extends State<ShippedAddress> {
                                         color: AppColors.primarycolor),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(20),
+                                    padding: const EdgeInsets.all(10),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -152,6 +150,28 @@ class _ShippedAddressState extends State<ShippedAddress> {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
+                                        // TextCustom(
+                                        //   text: " ₹${cartData?['totalAmount']}",
+                                        //   fontSize: 17,
+                                        //   fontWeight: FontWeight.w400,
+                                        //   color: Colors.grey,
+                                        // ),
+                                        // TextCustom(
+                                        //   text: " ₹${cartData?['quantity']}",
+                                        //   fontSize: 17,
+                                        //   fontWeight: FontWeight.w400,
+                                        //   color: Colors.grey,
+                                        // ),
+
+                                        // ...cartItems.map((item) {
+                                        //   return TextCustom(
+                                        //     text:
+                                        //         "${item['productName']} (x${item['quantity']}) - ₹${item['price']}",
+                                        //     fontSize: 17,
+                                        //     fontWeight: FontWeight.w400,
+                                        //     color: Colors.grey,
+                                        //   );
+                                        // }).toList(),
                                         TextCustom(
                                           text:
                                               "${address.pincode},\n${address.state}",
@@ -185,40 +205,51 @@ class _ShippedAddressState extends State<ShippedAddress> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SizedBox(
-                    height: 55,
-                    width: double.infinity,
-                    child: ButtonCustomized(
-                      text: "Submit Order",
-                      textStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                        height: 10,
-                      ),
-                      color: AppColors.primarycolor,
-                      onPressed: () {
-                        final selectedAddress = context
-                            .read<AddressCheckboxBloc>()
-                            .state
-                            .selectedDocumentId;
-                        if (selectedAddress == null) {
-                          showSnackBarMessage(context,
-                              "Please select a delivery address", Colors.red);
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FlipCardAnimation()));
-                        }
-                      },
-                    ),
-                  ),
-                ),
               ],
             ),
           );
         },
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          height: 55,
+          width: 300,
+          child: ButtonCustomized(
+            text: "Check Out",
+            textStyle: const TextStyle(
+              color: Colors.grey,
+              fontSize: 25,
+              fontWeight: FontWeight.w800,
+              height: 10,
+            ),
+            color: AppColors.primarycolor,
+            onPressed: () {
+              // Get the selected address document IDs
+
+              final selectedAddress =
+                  context.read<AddressCheckboxBloc>().state.selectedDocumentId;
+
+              if (selectedAddress == null) {
+                showSnackBarMessage(
+                    context, "Please select a delivery address", Colors.red);
+              } else {
+                final cartItems =
+                    (context.read<CartBloc>().state as CartLoadedState)
+                        .cartItems;
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Checkout(
+                      cartItems: cartItems,
+                      address: address,
+                      cartData: cartData,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

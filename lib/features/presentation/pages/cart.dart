@@ -186,13 +186,39 @@ class Cart extends StatelessWidget {
                   },
                 ),
                 ButtonCustomized(
-                  text: "Check Out",
+                  text: "Add Address",
                   color: AppColors.primarycolor,
                   height: 50,
                   width: 300,
                   borderRadius: 10,
                   onPressed: () {
-                    Navigator.pushNamed(context, "/ShippedAddress");
+                    final cartState =
+                        context.read<CartBloc>().state as CartLoadedState;
+
+                    // Calculate total price
+                    final totalPrice = getTotalSum(cartState) +
+                        shippingCharges +
+                        importCharges;
+
+                    // Prepare data to pass
+                    final cartData = {
+                      'totalAmount': totalPrice.toInt(),
+                      'cartItems': cartState.cartItems.map((item) {
+                        return {
+                          'productName':
+                              item['productName'] ?? 'Unknown Product',
+                          'quantity': item['count'] ?? 1,
+                          'price': item['price'] ?? 'N/A',
+                          'image': item['image'] ?? 'default_image_url',
+                        };
+                      }).toList(),
+                    };
+
+                    Navigator.pushNamed(
+                      context,
+                      "/ShippedAddress",
+                      arguments: cartData,
+                    );
                   },
                 ),
                 const SizedBox(height: 20),
