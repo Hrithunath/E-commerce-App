@@ -49,32 +49,43 @@ class NewArivals extends StatelessWidget {
               var product2 = topCollections[index];
               List<dynamic> imageList = product2['uploadImages'] ??
                   ['https://via.placeholder.com/100'];
-              return Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                        child: Image.network(
-                      imageList[0],
-                      fit: BoxFit.cover,
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextCustom(
-                              text: product2['productName'] ?? "No Name"),
-                          TextCustom(
-                              text:
-                                  "₹${product2['price']?.toString() ?? "No Price"}"),
-                        ],
-                      ),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductDetails(productDetails: product2),
                     ),
-                  ],
+                  );
+                },
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                          child: Image.network(
+                        imageList[0],
+                        fit: BoxFit.cover,
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextCustom(
+                                text: product2['productName'] ?? "No Name"),
+                            TextCustom(
+                                text:
+                                    "₹${product2['price']?.toString() ?? "No Price"}"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

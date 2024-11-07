@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_card.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
@@ -49,38 +48,49 @@ class Topcollections extends StatelessWidget {
               var product1 = topCollections[index];
               List<dynamic> imageList = product1['uploadImages'] ??
                   ['https://via.placeholder.com/100'];
-              return Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                        child: Image.network(
-                      imageList[0],
-                      fit: BoxFit.cover,
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextCustom(
-                            text: product1['productName'] ?? "No Name",
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          TextCustom(
-                            text:
-                                "₹${product1['price']?.toString() ?? "No Price"}",
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ],
-                      ),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductDetails(productDetails: product1),
                     ),
-                  ],
+                  );
+                },
+                child: Card(
+                  elevation: 5,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                          child: Image.network(
+                        imageList[0],
+                        fit: BoxFit.cover,
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextCustom(
+                              text: product1['productName'] ?? "No Name",
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            TextCustom(
+                              text:
+                                  "₹${product1['price']?.toString() ?? "No Price"}",
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -91,13 +101,3 @@ class Topcollections extends StatelessWidget {
     );
   }
 }
-
-// imageList: imageList,
-//                 product1: product1,
-//                 onTap: () {
-//                   Navigator.of(context).push(MaterialPageRoute(
-//                     builder: (context) => ProductDetails(
-//                       productDetails: product1,
-//                     ),
-//                   ));
-//                 },

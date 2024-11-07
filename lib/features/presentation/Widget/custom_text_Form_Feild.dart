@@ -9,6 +9,7 @@ class Textformfeildcustom extends StatelessWidget {
   final String? Function(String?)? validator;
   final Color? fillColor;
   final void Function(String)? onChanged;
+  final VoidCallback? onTap;
   IconData prefixIcon;
   IconData sufixIcon;
 
@@ -23,12 +24,14 @@ class Textformfeildcustom extends StatelessWidget {
     this.validator,
     this.fillColor,
     this.onChanged,
+    this.onTap,
     this.obscureText = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onTap,
       controller: controller,
       keyboardType: keyboardType,
       autovalidateMode: AutovalidateMode.onUserInteraction,

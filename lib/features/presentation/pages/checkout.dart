@@ -201,9 +201,12 @@ class Checkout extends StatelessWidget {
             double totalAmount = (cartData?['totalAmount'] as num).toDouble() +
                 shippingCharges +
                 importCharges;
+            print("totalAmount:$totalAmount");
+            final total = (totalAmount * 100).toInt();
+            print(total);
             var options = {
               'key': 'rzp_test_AAOvWXA6IXusAo',
-              'amount': (totalAmount * 100).toString(),
+              'amount': total,
               'currency': 'INR',
               'name': 'Acme Corp.',
               'description': 'Fine T-Shirt',
@@ -249,7 +252,17 @@ class Checkout extends StatelessWidget {
           .collection('users')
           .doc(user.uid) // Use the current user's ID
           .collection('orders')
-          .add(orderData);
+          .add(orderData)
+          .then((_) async {
+        final allDocuments = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('cart')
+            .get();
+        for (var item in allDocuments.docs) {
+          await item.reference.delete();
+        }
+      });
 
       // Optionally, show a success message or navigate to a different screen
       print("Order added successfully!");

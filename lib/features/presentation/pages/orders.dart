@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/core/Theme/app_colors.dart';
+import 'package:e_commerce_app/features/data/repository/order_servicee.dart';
+import 'package:e_commerce_app/features/domain/repository/order_repository.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MyOrders extends StatelessWidget {
   const MyOrders({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final OrderRepository orderRepository = OrderRepositoryImplementation();
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -21,51 +27,96 @@ class MyOrders extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: SizedBox(
-                      height: 100,
-                      child: ListTile(
-                        leading: Container(
-                          height: 100,
-                          width: 50,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8fDA%3D",
+              child: FutureBuilder<QuerySnapshot>(
+                future: orderRepository.fetchOrderDetails(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Skeletonizer(
+                      enabled: true,
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text('No orders found.'));
+                  } else {
+                    // Flatten all cartItems across orders
+                    List<dynamic> allCartItems = [];
+                    for (var order in snapshot.data!.docs) {
+                      var cartItems =
+                          order['cartItems'] as List<dynamic>? ?? [];
+                      allCartItems.addAll(cartItems);
+                    }
+
+                    return ListView.builder(
+                      itemCount: allCartItems.length,
+                      itemBuilder: (context, index) {
+                        var item = allCartItems[index];
+                        var imageUrl = item['image'] ?? '';
+                        var productName = item['productName'] ?? 'Product Name';
+                        var price = item['price'] ?? '0';
+                        var quantity = item['quantity'] ?? '1';
+                        var size = item['size'] ?? 'N/A';
+                        var stock = item['stock'] ?? 'N/A';
+                        var productId = item['productId'] ?? 'N/A';
+
+                        return Card(
+                          child: ExpansionTile(
+                            leading: Container(
+                              height: 80,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              fit: BoxFit.cover,
                             ),
-                          ),
-                        ),
-                        title: const Row(
-                          children: [
-                            SizedBox(
-                              width: 200,
-                              child: TextCustom(
-                                text: "Nike Air Zoom Pegasus 36 Miami",
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            title: TextCustom(
+                              text: productName,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(width: 17),
-                          ],
-                        ),
-                        subtitle: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextCustom(
-                              text: "₹299,43",
-                              fontSize: 19,
+                            subtitle: TextCustom(
+                              text: "₹$price",
+                              fontSize: 14,
                               color: AppColors.kgreen,
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                            children: [
+                              ListTile(
+                                title: TextCustom(
+                                  text: "Quantity: $quantity",
+                                  fontSize: 14,
+                                ),
+                              ),
+                              ListTile(
+                                title: TextCustom(
+                                  text: "Size: $size",
+                                  fontSize: 14,
+                                ),
+                              ),
+                              ListTile(
+                                title: TextCustom(
+                                  text: "Stock: $stock",
+                                  fontSize: 14,
+                                ),
+                              ),
+                              ListTile(
+                                title: TextCustom(
+                                  text: "Product ID: $productId",
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),

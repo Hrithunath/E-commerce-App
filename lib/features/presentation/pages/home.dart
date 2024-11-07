@@ -9,9 +9,12 @@ import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.d
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
+import 'package:e_commerce_app/features/presentation/pages/category.dart';
 import 'package:e_commerce_app/features/presentation/pages/new_arivals.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
+import 'package:e_commerce_app/features/presentation/pages/search.dart';
 import 'package:e_commerce_app/features/presentation/pages/topcollections.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -90,41 +93,6 @@ class Home extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                // TextCustom(
-                //   text: '', // Initial empty text; updated below
-                //   fontSize: 20,
-                //   fontWeight: FontWeight.bold,
-                //   color: Colors.white,
-                // ),
-
-                // // Use BlocBuilder to update the text
-                // BlocBuilder<AuthBloc, AuthState>(
-                //   builder: (context, state) {
-                //     if (state is AuthLoading) {
-                //       return const CircularProgressIndicator();
-                //     }
-
-                //     if (state is Authenticated) {
-                //       // Display user's name if available
-                //       final userdetails = state.user!;
-                //       print(userdetails);
-                //       final userName = userdetails.displayName;
-                //       return TextCustom(
-                //         text: userName!,
-                //         fontSize: 20,
-                //         fontWeight: FontWeight.bold,
-                //         color: Colors.white,
-                //       );
-                //     }
-
-                //     return const TextCustom(
-                //       text: 'User not logged in',
-                //       fontSize: 20,
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.white,
-                //     );
-                //   },
-                // ),
 
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -133,6 +101,12 @@ class Home extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Textformfeildcustom(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SearchingProducts()));
+                          },
                           fillColor: Colors.white,
                           hintText: "Search Product",
                           prefixIcon: Icons.search,
@@ -199,7 +173,13 @@ class Home extends StatelessWidget {
                               'https://via.placeholder.com/100';
 
                           return CustomProductCategory(
-                              category: category, imageUrl: imageUrl);
+                            category: category,
+                            imageUrl: imageUrl,
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => TopCategory()));
+                            },
+                          );
                         },
                       ),
                     );

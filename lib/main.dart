@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/data/repository/cart_service.dart';
 import 'package:e_commerce_app/features/data/repository/favourite_service.dart';
 import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
+import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/checkout.dart';
 import 'package:e_commerce_app/firebase_options.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';
@@ -62,7 +64,10 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
               create: (context) =>
                   FavouriteBloc(FavouritesRepositoryImplementation())),
-          BlocProvider(create: (context) => AddressCheckboxBloc())
+          BlocProvider(create: (context) => AddressCheckboxBloc()),
+          BlocProvider(
+              create: (context) =>
+                  ProductSearchBloc(FirebaseFirestore.instance)),
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,

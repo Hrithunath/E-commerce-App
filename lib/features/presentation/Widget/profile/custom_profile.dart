@@ -28,12 +28,6 @@ class Menu extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text('Payment Methods'),
-          leading: const Icon(Icons.payment_rounded),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {},
-        ),
-        ListTile(
           title: const Text('Settings'),
           leading: const Icon(Icons.settings),
           trailing: const Icon(Icons.chevron_right),
