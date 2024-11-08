@@ -243,7 +243,7 @@ class Checkout extends StatelessWidget {
       },
       'paymentId': response.paymentId,
       'timestamp': FieldValue.serverTimestamp(),
-      'status': 'Completed',
+      'status': 'Pending',
     };
 
     try {

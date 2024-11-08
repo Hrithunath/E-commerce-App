@@ -12,34 +12,15 @@ class Profile extends StatelessWidget {
     // context.read<UserBloc>().add(Fetch);
 
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        // if (state is SignOutSuccess) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(content: Text('Signed out successfully!')),
-        //   );
-        //   Navigator.pushReplacementNamed(context, "/Login");
-        // } else if (state is SignOutfailed) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(content: Text('Sign out failed! Please try again.')),
-        //   );
-        // }
-      },
+      listener: (context, state) {},
       builder: (context, state) {
-        String userName = 'Hrithunath';
-        String userEmail = 'hrithunath777@gmail.com';
+        String userName = 'Unknown User';
+        String userEmail = 'Not Available';
 
-        // if (state is Authenticated) {
-        //   if (state.user != null) {
-        //     userName = state.user?.displayName ?? 'Unknown';
-        //     userEmail = state.user?.email ?? 'No email available';
-        //     print(
-        //         'AuthenticatedState received with username: $userName, email: $userEmail'); // Improved logging
-        //   } else {
-        //     print('AuthenticatedState received but user is null');
-        //   }
-        // } else {
-        //   print('Current state is not authenticated: ${state.runtimeType}');
-        // }
+        if (state is AuthenticatedState) {
+          userName = state.username ?? 'Unknown User';
+          userEmail = state.email ?? 'Not Available';
+        }
 
         return SafeArea(
           child: Column(

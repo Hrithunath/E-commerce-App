@@ -74,6 +74,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<AuthBloc>().add(CheckLoginStatusEvent());
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -86,14 +87,8 @@ class Home extends StatelessWidget {
                       text: "Good day for shopping",
                       fontSize: 14,
                       color: Colors.white),
-                  subtitle: TextCustom(
-                    text: "Hrithunath",
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  subtitle: UsernameWidget(),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
@@ -278,26 +273,62 @@ class Home extends StatelessWidget {
               }
 
               var topCollections = snapshot.data!;
-              return SizedBox(
-                height: 350,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: topCollections.length,
-                  itemBuilder: (context, index) {
-                    var product1 = topCollections[index];
-                    List<dynamic> imageList = product1['uploadImages'] ??
-                        ['https://via.placeholder.com/100'];
-                    return CustomProductCard(
-                      imageList: imageList,
-                      product1: product1,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                                  productDetails: product1,
-                                )));
-                      },
-                    );
-                  },
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 440,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemCount: topCollections.length,
+                    itemBuilder: (context, index) {
+                      var product1 = topCollections[index];
+                      // Access product data from the QueryDocumentSnapshot
+                      var productName = product1['productName'] ?? "No Name";
+                      var price = product1['price'] ?? 0;
+                      var imageList = product1['uploadImages'] ??
+                          ['https://via.placeholder.com/100'];
+
+                      return Card(
+                        elevation: 5,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.network(
+                                imageList[0],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextCustom(
+                                    text: productName,
+                                  ),
+                                  TextCustom(
+                                    text: "₹${price.toString()}",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
@@ -333,26 +364,70 @@ class Home extends StatelessWidget {
               }
 
               var newArrivals = snapshot.data!;
-              return SizedBox(
-                height: 350,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: newArrivals.length,
-                  itemBuilder: (context, index) {
-                    var product2 = newArrivals[index];
-                    List<dynamic> imageList = product2['uploadImages'] ??
-                        ['https://via.placeholder.com/100'];
-                    return CustomProductCard(
-                      imageList: imageList,
-                      product1: product2,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                                  productDetails: product2,
-                                )));
-                      },
-                    );
-                  },
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 450,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemCount: newArrivals.length,
+                    itemBuilder: (context, index) {
+                      var product2 = newArrivals[index];
+                      // Access product data from the QueryDocumentSnapshot
+                      var productName = product2['productName'] ?? "No Name";
+                      var price = product2['price'] ?? 0;
+                      var imageList = product2['uploadImages'] ??
+                          ['https://via.placeholder.com/100'];
+
+                      return Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2.0,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Image.network(
+                                  imageList[0],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextCustom(
+                                    text: productName,
+                                  ),
+                                  TextCustom(
+                                    text: "₹${price.toString()}",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
@@ -362,16 +437,50 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget Appbar() {
-    return const CustomAppbar(
-      title: TextCustom(
-          text: "Good day for shopping", fontSize: 14, color: Colors.white),
-      subtitle: TextCustom(
-        text: "Hrithunath",
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
+  // Widget Appbar() {
+  //   return const CustomAppbar(
+  //     title: TextCustom(
+  //         text: "Good day for shopping", fontSize: 14, color: Colors.white),
+  //     subtitle: UsernameWidget(),
+  //     // subtitle: TextCustom(
+  //     //   text: "Hrithunath",
+  //     //   fontSize: 20,
+  //     //   fontWeight: FontWeight.bold,
+  //     //   color: Colors.white,
+  //     // ),
+  //   );
+  // }
+}
+
+class UsernameWidget extends StatelessWidget {
+  const UsernameWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthLoadingState) {
+          return const CircularProgressIndicator();
+        }
+
+        if (state is AuthenticatedState) {
+          // Display user's name if available
+          final String username = state.username ?? 'Unknown User';
+
+          return Text(
+            username,
+            style: const TextStyle(color: Colors.white, fontSize: 20),
+          );
+        }
+
+        if (state is AuthErrorState) {
+          return Text('Error: ${state.errorMessage}');
+        }
+
+        return const Text('User not logged in');
+      },
     );
   }
 }

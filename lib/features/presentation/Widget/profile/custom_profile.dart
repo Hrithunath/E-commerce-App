@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
+import 'package:e_commerce_app/features/presentation/pages/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,7 +58,8 @@ class Menu extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         context.read<AuthBloc>().add(LogoutEvent());
-                        Navigator.of(context).pop();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Login()));
                       },
                       child: const Text('Logout'),
                     ),
