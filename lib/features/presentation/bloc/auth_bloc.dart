@@ -35,8 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             await FirebaseFirestore.instance
                 .collection("users")
                 .doc(user!.uid)
-                .get(const GetOptions(
-                    source: Source.server)); // Force fetch from server
+                .get(const GetOptions(source: Source.server));
 
         if (userData.exists) {
           final String? username = userData.data()?["name"];

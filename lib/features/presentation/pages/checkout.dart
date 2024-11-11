@@ -232,7 +232,15 @@ class Checkout extends StatelessWidget {
     double totalAmount = (cartData?['totalAmount'] as num).toDouble() +
         shippingCharges +
         importCharges;
+
+    //  FirebaseFirestore.instance
+    //       .collection('users')
+    //       .doc(user.uid)
+    //       .collection('orders')
+    //       .doc();
+
     Map<String, dynamic> orderData = {
+      'userId': user.uid,
       'cartItems': cartItems,
       'totalAmount': totalAmount,
       'address': {
@@ -241,19 +249,42 @@ class Checkout extends StatelessWidget {
         'state': address.state,
         'phone': address.phone,
       },
+      'orderId': '',
       'paymentId': response.paymentId,
       'timestamp': FieldValue.serverTimestamp(),
       'status': 'Pending',
     };
 
     try {
-      // Add order to the user's "orders" collection
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid) // Use the current user's ID
+          .doc(user.uid)
           .collection('orders')
           .add(orderData)
-          .then((_) async {
+          .then((value) async {
+        Map<String, dynamic> orderDatas = {
+          'userId': user.uid,
+          'cartItems': cartItems,
+          'totalAmount': totalAmount,
+          'address': {
+            'name': address.name,
+            'address': address.address,
+            'state': address.state,
+            'phone': address.phone,
+          },
+          'orderId': value.id,
+          'paymentId': response.paymentId,
+          'timestamp': FieldValue.serverTimestamp(),
+          'status': 'Pending',
+        };
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('orders')
+            .doc(value.id)
+            .update(orderDatas);
+
         final allDocuments = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -263,8 +294,6 @@ class Checkout extends StatelessWidget {
           await item.reference.delete();
         }
       });
-
-      // Optionally, show a success message or navigate to a different screen
       print("Order added successfully!");
     } catch (e) {
       print("Failed to add order: $e");
