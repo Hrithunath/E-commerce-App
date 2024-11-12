@@ -11,7 +11,19 @@ class About extends StatelessWidget {
         title: TextCustom(text: 'About'),
       ),
       body: Column(
-        children: [],
+        children: [
+          TextCustom(text: 'APP Name'),
+          TextCustom(text: '1.0.0'),
+          Column(
+            children: [
+              TextCustom(text: 'About this app'),
+              TextCustom(text: ''),
+              TextCustom(text: 'Developer Information'),
+              TextCustom(text: 'Privacy Policy'),
+              TextCustom(text: 'Terms & Condition'),
+            ],
+          )
+        ],
       ),
     );
   }

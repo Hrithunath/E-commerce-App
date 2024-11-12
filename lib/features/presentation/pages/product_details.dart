@@ -47,78 +47,58 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Positioned(
                     top: 10,
                     right: 10,
-                    child: BlocBuilder<FavouriteBloc, FavouriteState>(
+                    child: BlocConsumer<FavouriteBloc, FavouriteState>(
+                      listener: (context, state) {},
                       builder: (context, state) {
-                        final isFavourite = state is FavouriteLoaded &&
-                            state.favourites.any((favourite) =>
-                                favourite.productId ==
-                                widget.productDetails["id"]);
-                        return SizedBox(
-                          height: 30,
-                          child: IconButton(
-                              icon: Icon(
-                                isFavourite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color:
-                                    isFavourite ? AppColors.kred : Colors.white,
-                                size: 30,
-                              ),
-                              onPressed: () {
-                                if (widget.productDetails
-                                        is Map<String, dynamic> &&
-                                    widget.productDetails["id"] != null) {
-                                  String productId =
-                                      widget.productDetails["id"] as String;
-                                  String? imageUrl =
-                                      widget.productDetails["uploadImages"][0];
-                                  String? name =
-                                      widget.productDetails["productName"];
-                                  var priceValue =
-                                      widget.productDetails["price"];
-                                  double price;
+                        bool isFavourite = false;
 
-                                  if (priceValue is int) {
-                                    price = priceValue.toDouble();
-                                  } else if (priceValue is double) {
-                                    price = priceValue;
-                                  } else {
-                                    print(
-                                        "Unexpected type for price: ${priceValue.runtimeType}");
-                                    return;
-                                  }
+                        if (state is FavouriteSuccess) {
+                          // Check if the product is in the list of favorites
+                          isFavourite = state.favourites.any((favourite) =>
+                              favourite.productId ==
+                              widget.productDetails["id"]);
+                        }
 
-                                  print("Product ID: $productId");
-                                  print("Image URL: $imageUrl");
-                                  print("Name: $name");
-                                  print("Price: $price");
-
-                                  String favouriteId = "fav_$productId";
-                                  if (isFavourite) {
-                                    context
-                                        .read<FavouriteBloc>()
-                                        .add(RemoveFavouriteEvent(productId));
-                                    print(
-                                        "Removing favourite for product ID: $productId");
-                                  } else {
-                                    FavouriteModel newFavourite =
-                                        FavouriteModel(
-                                      productId: productId,
-                                      favouriteid: favouriteId,
-                                      imageUrl: imageUrl,
-                                      name: name,
-                                      price: price,
-                                    );
-                                    context
-                                        .read<FavouriteBloc>()
-                                        .add(AddFavouriteEvent(newFavourite));
-                                    print("Added to favourites: $newFavourite");
-                                  }
-                                } else {
-                                  print(
-                                      "Invalid product ID or product details.");
-                                }
-                              }),
+                        return IconButton(
+                          icon: Icon(
+                            isFavourite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: isFavourite ? AppColors.kred : Colors.white,
+                            size: 30,
+                          ),
+                          onPressed: () {
+                            String productId = widget.productDetails["id"];
+                            String? imageUrl =
+                                widget.productDetails["uploadImages"][0];
+                            String? name = widget.productDetails["productName"];
+                            double price =
+                                widget.productDetails["price"]?.toDouble() ??
+                                    0.0;
+                            String favouriteId = "fav_$productId";
+                            // print('Removing from produvtdetails');
+                            // context
+                            //     .read<FavouriteBloc>()
+                            //     .add(RemoveFavouriteEvent(productId));
+                            if (isFavourite) {
+                              // Dispatch an event to remove from favorites
+                              context
+                                  .read<FavouriteBloc>()
+                                  .add(RemoveFavouriteEvent(productId));
+                            } else {
+                              // Create a new favourite model and dispatch an event to add it
+                              FavouriteModel newFavourite = FavouriteModel(
+                                productId: productId,
+                                favouriteid: favouriteId,
+                                imageUrl: imageUrl,
+                                name: name,
+                                price: price,
+                              );
+                              context
+                                  .read<FavouriteBloc>()
+                                  .add(AddFavouriteEvent(newFavourite));
+                            }
+                          },
                         );
                       },
                     ),

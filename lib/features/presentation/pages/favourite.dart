@@ -3,7 +3,6 @@ import 'package:e_commerce_app/features/presentation/Widget/custom_alert_dialog.
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bloc.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Favourite extends StatelessWidget {
@@ -16,7 +15,7 @@ class Favourite extends StatelessWidget {
         builder: (context, state) {
           if (state is FavouriteLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is FavouriteLoaded) {
+          } else if (state is FavouriteSuccess) {
             final favourites = state.favourites;
             if (favourites.isEmpty) {
               return const Center(
@@ -49,7 +48,7 @@ class Favourite extends StatelessWidget {
                       ),
                       itemCount: favourites.length,
                       itemBuilder: (context, index) {
-                        final favouriteModel = favourites.elementAt(index);
+                        final favouriteModel = favourites[index];
 
                         return Card(
                           elevation: 5,

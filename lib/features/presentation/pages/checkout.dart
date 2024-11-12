@@ -4,6 +4,8 @@ import 'package:e_commerce_app/features/domain/model/address_model.dart';
 import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/cart/cart_bloc.dart';
+import 'package:e_commerce_app/features/presentation/pages/payment_failed.dart';
+import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +30,6 @@ class Checkout extends StatelessWidget {
   Widget build(BuildContext context) {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +43,7 @@ class Checkout extends StatelessWidget {
               ListView.builder(
                 itemCount: cartItems.length,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = cartItems[index];
                   // var cartItem = (cartData!['cartItems'] as List)[index];
@@ -190,7 +191,7 @@ class Checkout extends StatelessWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: EdgeInsets.all(30),
         child: ButtonCustomized(
           text: "Submit Order",
           color: AppColors.primarycolor,
@@ -219,7 +220,8 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+  void _handlePaymentSuccess(
+      BuildContext context, PaymentSuccessResponse response) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     User? user = firebaseAuth.currentUser;
 
@@ -232,12 +234,6 @@ class Checkout extends StatelessWidget {
     double totalAmount = (cartData?['totalAmount'] as num).toDouble() +
         shippingCharges +
         importCharges;
-
-    //  FirebaseFirestore.instance
-    //       .collection('users')
-    //       .doc(user.uid)
-    //       .collection('orders')
-    //       .doc();
 
     Map<String, dynamic> orderData = {
       'userId': user.uid,
@@ -293,21 +289,22 @@ class Checkout extends StatelessWidget {
         for (var item in allDocuments.docs) {
           await item.reference.delete();
         }
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => PaymentSuccess()));
       });
+
       print("Order added successfully!");
     } catch (e) {
       print("Failed to add order: $e");
     }
   }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    // Handle payment error
+  void _handlePaymentError(
+      BuildContext context, PaymentFailureResponse response) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PaymentFailed()));
     print("Payment Error: ${response.message}");
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    // Handle external wallet selection
-    print("External Wallet: ${response.walletName}");
   }
 
   double getTotalSum(CartLoadedState state) {

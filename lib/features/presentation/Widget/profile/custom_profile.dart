@@ -29,10 +29,12 @@ class Menu extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text('Settings'),
-          leading: const Icon(Icons.settings),
+          title: const Text('About'),
+          leading: const Icon(Icons.info),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, "/About");
+          },
         ),
         ListTile(
           title: const Text('Logout'),

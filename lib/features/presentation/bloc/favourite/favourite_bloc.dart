@@ -9,50 +9,34 @@ part 'favourite_state.dart';
 class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
   final FavouriteRepository favouriteRepository;
 
-  FavouriteBloc(this.favouriteRepository) : super(FavouriteInitial(const [])) {
-    // Event handlers
-    on<LoadFavouritesEvent>(loadFavourites);
-    on<AddFavouriteEvent>(addFavourites);
-    on<RemoveFavouriteEvent>(removeFavourites);
-  }
+  FavouriteBloc(this.favouriteRepository) : super(FavouriteInitial()) {
+    on<LoadFavouritesEvent>((event, emit) async {
+      emit(FavouriteLoading());
+      try {
+        final favourites = await favouriteRepository.getFavouriteService();
+        emit(FavouriteSuccess(favourites));
+      } catch (e) {
+        emit(FavouriteError(e.toString()));
+      }
+    });
 
-  Future<void> loadFavourites(
-      LoadFavouritesEvent event, Emitter<FavouriteState> emit) async {
-    emit(FavouriteLoading());
-    try {
-      final favourites = await favouriteRepository.getFavouriteService();
-      emit(FavouriteLoaded(favourites));
-    } catch (e) {
-      emit(FavouriteError(message: e.toString()));
-    }
-  }
+    List<FavouriteModel> favouritesItems = [];
+    on<AddFavouriteEvent>((event, emit) async {
+      try {
+        await favouriteRepository.addFavouriteService(event.favourite);
+        emit(FavouriteSuccess(favouritesItems));
+      } catch (e) {
+        emit(FavouriteError(e.toString()));
+      }
+    });
 
-  Future<void> addFavourites(
-      AddFavouriteEvent event, Emitter<FavouriteState> emit) async {
-    emit(FavouriteLoading());
-    try {
-      await favouriteRepository.addFavouriteService(event.favourite);
-      emit(FavouriteAddedSuccess(event.favourite));
-
-      add(LoadFavouritesEvent());
-    } catch (e) {
-      emit(FavouriteError(message: e.toString()));
-    }
-  }
-
-  Future<void> removeFavourites(
-      RemoveFavouriteEvent event, Emitter<FavouriteState> emit) async {
-    emit(FavouriteLoading());
-    try {
-      final favouriteId = event.favouriteId;
-      print("Removing favourite with ID: $favouriteId");
-      await favouriteRepository.removeFavouriteService(event.favouriteId);
-
-      emit(FavouriteRemovedSuccess(event.favouriteId));
-
-      add(LoadFavouritesEvent());
-    } catch (e) {
-      emit(FavouriteError(message: e.toString()));
-    }
+    on<RemoveFavouriteEvent>((event, emit) async {
+      try {
+        await favouriteRepository.removeFavouriteService(event.favouriteId);
+        // add(LoadFavouritesEvent());
+      } catch (e) {
+        emit(FavouriteError(e.toString()));
+      }
+    });
   }
 }
