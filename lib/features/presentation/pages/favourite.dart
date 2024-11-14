@@ -2,8 +2,11 @@ import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_alert_dialog.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
+import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Favourite extends StatelessWidget {
   const Favourite({super.key});
@@ -14,7 +17,15 @@ class Favourite extends StatelessWidget {
       child: BlocBuilder<FavouriteBloc, FavouriteState>(
         builder: (context, state) {
           if (state is FavouriteLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: Skeletonizer(
+              enabled: true,
+              child: Container(
+                height: 100,
+                width: double.infinity,
+                color: Colors.grey[300],
+              ),
+            ));
           } else if (state is FavouriteSuccess) {
             final favourites = state.favourites;
             if (favourites.isEmpty) {
@@ -50,10 +61,19 @@ class Favourite extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final favouriteModel = favourites[index];
 
-                        return Card(
-                          elevation: 5,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                        return Container(
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,15 +83,19 @@ class Favourite extends StatelessWidget {
                                   children: [
                                     Positioned.fill(
                                       child: favouriteModel.imageUrl != null
-                                          ? Image.network(
-                                              favouriteModel.imageUrl!,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                return const Center(
-                                                    child: Text(
-                                                        "Image not available"));
-                                              },
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Image.network(
+                                                favouriteModel.imageUrl!,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return const Center(
+                                                      child: Text(
+                                                          "Image not available"));
+                                                },
+                                              ),
                                             )
                                           : const Center(
                                               child: Text("No Image")),
@@ -147,9 +171,7 @@ class Favourite extends StatelessWidget {
             );
           }
 
-          return const Center(
-            child: Text("An unexpected error occurred."),
-          );
+          return Text('sinan');
         },
       ),
     );

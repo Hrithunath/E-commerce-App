@@ -2,8 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_appbar.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_primary_header_container.dart';
-import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product%7C_category.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_card.dart';
+import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_category.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_text_row.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
@@ -14,7 +14,6 @@ import 'package:e_commerce_app/features/presentation/pages/new_arivals.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:e_commerce_app/features/presentation/pages/search.dart';
 import 'package:e_commerce_app/features/presentation/pages/topcollections.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -100,7 +99,8 @@ class Home extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SearchingProducts()));
+                                    builder: (context) =>
+                                        const SearchingProducts()));
                           },
                           fillColor: Colors.white,
                           hintText: "Search Product",
@@ -172,7 +172,7 @@ class Home extends StatelessWidget {
                             imageUrl: imageUrl,
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => TopCategory()));
+                                  builder: (context) => const TopCategory()));
                             },
                           );
                         },
@@ -276,56 +276,23 @@ class Home extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                  height: 440,
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                    ),
+                  height: 350,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
                     itemCount: topCollections.length,
                     itemBuilder: (context, index) {
                       var product1 = topCollections[index];
-                      // Access product data from the QueryDocumentSnapshot
-                      var productName = product1['productName'] ?? "No Name";
-                      var price = product1['price'] ?? 0;
-                      var imageList = product1['uploadImages'] ??
+                      List<dynamic> imageList = product1['uploadImages'] ??
                           ['https://via.placeholder.com/100'];
-
-                      return Card(
-                        elevation: 5,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                              child: Image.network(
-                                imageList[0],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  TextCustom(
-                                    text: productName,
-                                  ),
-                                  TextCustom(
-                                    text: "₹${price.toString()}",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      return CustomProductCard(
+                        imageList: imageList,
+                        product1: product1,
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProductDetails(
+                                    productDetails: product1,
+                                  )));
+                        },
                       );
                     },
                   ),
@@ -367,64 +334,23 @@ class Home extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                  height: 450,
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                    ),
+                  height: 350,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
                     itemCount: newArrivals.length,
                     itemBuilder: (context, index) {
                       var product2 = newArrivals[index];
-                      // Access product data from the QueryDocumentSnapshot
-                      var productName = product2['productName'] ?? "No Name";
-                      var price = product2['price'] ?? 0;
-                      var imageList = product2['uploadImages'] ??
+                      List<dynamic> imageList = product2['uploadImages'] ??
                           ['https://via.placeholder.com/100'];
-
-                      return Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Image.network(
-                                  imageList[0],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  TextCustom(
-                                    text: productName,
-                                  ),
-                                  TextCustom(
-                                    text: "₹${price.toString()}",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      return CustomProductCard(
+                        imageList: imageList,
+                        product1: product2,
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProductDetails(
+                                    productDetails: product2,
+                                  )));
+                        },
                       );
                     },
                   ),
@@ -436,20 +362,6 @@ class Home extends StatelessWidget {
       ),
     );
   }
-
-  // Widget Appbar() {
-  //   return const CustomAppbar(
-  //     title: TextCustom(
-  //         text: "Good day for shopping", fontSize: 14, color: Colors.white),
-  //     subtitle: UsernameWidget(),
-  //     // subtitle: TextCustom(
-  //     //   text: "Hrithunath",
-  //     //   fontSize: 20,
-  //     //   fontWeight: FontWeight.bold,
-  //     //   color: Colors.white,
-  //     // ),
-  //   );
-  // }
 }
 
 class UsernameWidget extends StatelessWidget {
@@ -462,7 +374,14 @@ class UsernameWidget extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthLoadingState) {
-          return const CircularProgressIndicator();
+          return Skeletonizer(
+            enabled: true,
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              color: Colors.grey[300],
+            ),
+          );
         }
 
         if (state is AuthenticatedState) {

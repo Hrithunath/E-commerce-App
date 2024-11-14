@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class TopCategory extends StatefulWidget {
   const TopCategory({super.key});
@@ -42,7 +43,15 @@ class _TopCategoryState extends State<TopCategory> {
         future: fetchCategories(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: Skeletonizer(
+              enabled: true,
+              child: Container(
+                height: 100,
+                width: double.infinity,
+                color: Colors.grey[300],
+              ),
+            ));
           }
           if (snapshot.hasError) {
             return const Center(child: Text("Error loading categories"));
@@ -99,7 +108,15 @@ class _TopCategoryState extends State<TopCategory> {
                   builder: (context, productSnapshot) {
                     if (productSnapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: Skeletonizer(
+                        enabled: true,
+                        child: Container(
+                          height: 100,
+                          width: double.infinity,
+                          color: Colors.grey[300],
+                        ),
+                      ));
                     }
                     if (productSnapshot.hasError) {
                       return const Center(

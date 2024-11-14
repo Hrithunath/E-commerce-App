@@ -2,6 +2,7 @@ import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/data/repository/address_service.dart';
 import 'package:e_commerce_app/features/domain/model/address_model.dart';
 import 'package:e_commerce_app/features/presentation/Widget/button.dart';
+import 'package:e_commerce_app/features/presentation/Widget/custom_alert_dialog.dart';
 import 'package:e_commerce_app/features/presentation/pages/address/edit_address.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,14 @@ Row addressEditButton(double screenWidth, BuildContext context,
           ),
           color: AppColors.primarycolor,
           onPressed: () {
-            shippingAddressService.deleteAddress(address);
+            showAlertDialog(
+              context,
+              "Remove Address",
+              "Are you sure you want to remove this item from Address?",
+              () {
+                shippingAddressService.deleteAddress(address);
+              },
+            );
           },
         ),
       ),

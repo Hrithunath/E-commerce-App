@@ -7,6 +7,8 @@ import 'package:e_commerce_app/features/presentation/Widget/custom_scaffold_mess
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/cart/cart_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
+import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -76,15 +78,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 widget.productDetails["price"]?.toDouble() ??
                                     0.0;
                             String favouriteId = "fav_$productId";
-                            // print('Removing from produvtdetails');
-                            // context
-                            //     .read<FavouriteBloc>()
-                            //     .add(RemoveFavouriteEvent(productId));
                             if (isFavourite) {
                               // Dispatch an event to remove from favorites
                               context
                                   .read<FavouriteBloc>()
-                                  .add(RemoveFavouriteEvent(productId));
+                                  .add(RemoveFavouriteEvent(favouriteId));
                             } else {
                               // Create a new favourite model and dispatch an event to add it
                               FavouriteModel newFavourite = FavouriteModel(
@@ -244,7 +242,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                     }
 
                     final cartBloc = context.read<CartBloc>();
-                    final currentState = cartBloc.state;
                     final CartRepositoryImplementation
                         cartRepositoryImplementation =
                         CartRepositoryImplementation();
@@ -252,18 +249,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                         await cartRepositoryImplementation
                             .isProductInCart(widget.productDetails["id"]);
 
-                    // if (currentState is CartLoadedState) {
-                    //   isProductAlreadyInCart = currentState.cartItems.any(
-                    //     (item) =>
-                    //         item["productid"] ==
-                    //         widget.productDetails["productid"],
-                    //   );
-                    // }
-
                     if (isProductAlreadyInCart) {
                       showSnackBarMessage(context,
                           "This product is already in the cart.", Colors.red);
-
                       return;
                     }
 

@@ -7,7 +7,6 @@ import 'package:e_commerce_app/features/presentation/Widget/login/custom_signin_
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
-import 'package:e_commerce_app/features/presentation/pages/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

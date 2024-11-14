@@ -12,7 +12,8 @@ import 'package:e_commerce_app/features/presentation/pages/address/add_address.d
 import 'package:e_commerce_app/features/presentation/pages/checkout.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // Import for Bloc
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart'; // Import for Bloc
 
 class ShippedAddress extends StatelessWidget {
   final String userId;
@@ -55,9 +56,15 @@ class ShippedAddress extends StatelessWidget {
         stream: shippingAddressService.fetchAddress(userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return Center(
+                child: Skeletonizer(
+              enabled: true,
+              child: Container(
+                height: 100,
+                width: double.infinity,
+                color: Colors.grey[300],
+              ),
+            ));
           }
           if (snapshot.hasError) {
             return const Center(
@@ -150,28 +157,6 @@ class ShippedAddress extends StatelessWidget {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        // TextCustom(
-                                        //   text: " ₹${cartData?['totalAmount']}",
-                                        //   fontSize: 17,
-                                        //   fontWeight: FontWeight.w400,
-                                        //   color: Colors.grey,
-                                        // ),
-                                        // TextCustom(
-                                        //   text: " ₹${cartData?['quantity']}",
-                                        //   fontSize: 17,
-                                        //   fontWeight: FontWeight.w400,
-                                        //   color: Colors.grey,
-                                        // ),
-
-                                        // ...cartItems.map((item) {
-                                        //   return TextCustom(
-                                        //     text:
-                                        //         "${item['productName']} (x${item['quantity']}) - ₹${item['price']}",
-                                        //     fontSize: 17,
-                                        //     fontWeight: FontWeight.w400,
-                                        //     color: Colors.grey,
-                                        //   );
-                                        // }).toList(),
                                         TextCustom(
                                           text:
                                               "${address.pincode},\n${address.state}",
@@ -200,6 +185,62 @@ class ShippedAddress extends StatelessWidget {
                               );
                             },
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: SizedBox(
+                              height: 55,
+                              width: 300,
+                              child: ButtonCustomized(
+                                text: "Check Out",
+                                textStyle: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w800,
+                                  height: 10,
+                                ),
+                                color: AppColors.primarycolor,
+                                onPressed: () {
+                                  // Get the selected address document IDs
+
+                                  final selectedAddressId = context
+                                      .read<AddressCheckboxBloc>()
+                                      .state
+                                      .selectedDocumentId;
+
+                                  if (selectedAddressId == null) {
+                                    showSnackBarMessage(
+                                        context,
+                                        "Please select a delivery address",
+                                        Colors.red);
+                                  } else {
+                                    // Find the selected address based on its document ID
+                                    final selectedAddressDoc =
+                                        addressDocs.firstWhere(
+                                      (doc) => doc.id == selectedAddressId,
+                                    );
+
+                                    final selectedAddress =
+                                        AddressModel.fromFirestore(
+                                            selectedAddressDoc);
+
+                                    final cartItems = (context
+                                            .read<CartBloc>()
+                                            .state as CartLoadedState)
+                                        .cartItems;
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => Checkout(
+                                          cartItems: cartItems,
+                                          address: selectedAddress,
+                                          cartData: cartData,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -209,47 +250,6 @@ class ShippedAddress extends StatelessWidget {
             ),
           );
         },
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SizedBox(
-          height: 55,
-          width: 300,
-          child: ButtonCustomized(
-            text: "Check Out",
-            textStyle: const TextStyle(
-              color: Colors.grey,
-              fontSize: 25,
-              fontWeight: FontWeight.w800,
-              height: 10,
-            ),
-            color: AppColors.primarycolor,
-            onPressed: () {
-              // Get the selected address document IDs
-
-              final selectedAddress =
-                  context.read<AddressCheckboxBloc>().state.selectedDocumentId;
-
-              if (selectedAddress == null) {
-                showSnackBarMessage(
-                    context, "Please select a delivery address", Colors.red);
-              } else {
-                final cartItems =
-                    (context.read<CartBloc>().state as CartLoadedState)
-                        .cartItems;
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => Checkout(
-                      cartItems: cartItems,
-                      address: address,
-                      cartData: cartData,
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-        ),
       ),
     );
   }

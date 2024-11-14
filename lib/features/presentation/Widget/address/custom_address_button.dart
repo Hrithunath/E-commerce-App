@@ -34,7 +34,7 @@ Future<void> addAddress(
       stateController.clear();
       phoneController.clear();
       showSnackBarMessage(context, "Address added successfully", Colors.green);
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context).pop(MaterialPageRoute(
           builder: (context) => ShippedAddress(userId: userId!)));
     } catch (e) {
       showSnackBarMessage(context, "Failed to add address: $e", Colors.red);

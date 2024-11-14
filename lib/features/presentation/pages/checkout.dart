@@ -4,14 +4,13 @@ import 'package:e_commerce_app/features/domain/model/address_model.dart';
 import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/cart/cart_bloc.dart';
-import 'package:e_commerce_app/features/presentation/pages/payment_failed.dart';
 import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-class Checkout extends StatelessWidget {
+class Checkout extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
   final Map<String, Object>? cartData;
   final AddressModel address;
@@ -21,16 +20,36 @@ class Checkout extends StatelessWidget {
       required this.address,
       required this.cartData});
 
-  final Razorpay _razorpay = Razorpay();
-
   static const double shippingCharges = 40.00;
   static const double importCharges = 128.00;
 
   @override
-  Widget build(BuildContext context) {
+  State<Checkout> createState() => _CheckoutState();
+}
+
+class _CheckoutState extends State<Checkout> {
+  final Razorpay _razorpay = Razorpay();
+
+  @override
+  void initState() {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    super.initState();
+  }
 
+  @override
+  void dispose() {
+    @override
+    void dispose() {
+      _razorpay.clear();
+      super.dispose();
+    }
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Checkout'),
@@ -41,11 +60,11 @@ class Checkout extends StatelessWidget {
           child: Column(
             children: [
               ListView.builder(
-                itemCount: cartItems.length,
+                itemCount: widget.cartItems.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  var item = cartItems[index];
+                  var item = widget.cartItems[index];
                   // var cartItem = (cartData!['cartItems'] as List)[index];
                   return Card(
                     child: SizedBox(
@@ -63,12 +82,12 @@ class Checkout extends StatelessWidget {
                           ),
                         ),
                         title: TextCustom(
-                          text: "₹${item['price'] ?? 0}",
+                          text: "₹${item['productName'] ?? 0}",
                           fontSize: 19,
                           color: AppColors.kgreen,
                         ),
                         subtitle: TextCustom(
-                          text: "Quantity: ${item['quantity'] ?? 0}",
+                          text: "₹${item['price'] ?? 0}",
                         ),
                       ),
                     ),
@@ -90,7 +109,7 @@ class Checkout extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextCustom(
-                          text: address.name,
+                          text: widget.address.name,
                           fontSize: 17,
                           fontWeight: FontWeight.w800,
                           height: 3,
@@ -98,19 +117,19 @@ class Checkout extends StatelessWidget {
                       ],
                     ),
                     TextCustom(
-                      text: address.address,
+                      text: widget.address.address,
                       fontSize: 17,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey,
                     ),
                     TextCustom(
-                      text: address.state,
+                      text: widget.address.state,
                       fontSize: 17,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey,
                     ),
                     TextCustom(
-                      text: address.phone,
+                      text: widget.address.phone,
                       fontSize: 17,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey,
@@ -157,7 +176,7 @@ class Checkout extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextCustom(text: "Shipping"),
-                          TextCustom(text: "₹$shippingCharges"),
+                          TextCustom(text: "₹${Checkout.shippingCharges}"),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -165,7 +184,7 @@ class Checkout extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextCustom(text: "Import charges"),
-                          TextCustom(text: "₹$importCharges"),
+                          TextCustom(text: "₹${Checkout.importCharges}"),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -178,7 +197,7 @@ class Checkout extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           TextCustom(
-                            text: " ₹${cartData?['totalAmount']}",
+                            text: " ₹${widget.cartData?['totalAmount']}",
                           ),
                         ],
                       ),
@@ -191,7 +210,7 @@ class Checkout extends StatelessWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: ButtonCustomized(
           text: "Submit Order",
           color: AppColors.primarycolor,
@@ -199,9 +218,9 @@ class Checkout extends StatelessWidget {
           width: 300,
           borderRadius: 10,
           onPressed: () {
-            double totalAmount = (cartData?['totalAmount'] as num).toDouble() +
-                shippingCharges +
-                importCharges;
+            double totalAmount =
+                (widget.cartData?['totalAmount'] as num).toDouble();
+
             print("totalAmount:$totalAmount");
             final total = (totalAmount * 100).toInt();
             print(total);
@@ -220,8 +239,7 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  void _handlePaymentSuccess(
-      BuildContext context, PaymentSuccessResponse response) async {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     User? user = firebaseAuth.currentUser;
 
@@ -231,25 +249,25 @@ class Checkout extends StatelessWidget {
     }
 
     // Prepare order data to save in Firestore
-    double totalAmount = (cartData?['totalAmount'] as num).toDouble() +
-        shippingCharges +
-        importCharges;
+    double totalAmount = (widget.cartData?['totalAmount'] as num).toDouble();
 
     Map<String, dynamic> orderData = {
       'userId': user.uid,
-      'cartItems': cartItems,
+      'cartItems': widget.cartItems,
       'totalAmount': totalAmount,
       'address': {
-        'name': address.name,
-        'address': address.address,
-        'state': address.state,
-        'phone': address.phone,
+        'name': widget.address.name,
+        'address': widget.address.address,
+        'state': widget.address.state,
+        'phone': widget.address.phone,
       },
       'orderId': '',
       'paymentId': response.paymentId,
       'timestamp': FieldValue.serverTimestamp(),
       'status': 'Pending',
     };
+    print('AFFSSFFFF\n\n\n\n');
+    Navigator.pushReplacementNamed(context, "/PaymentSuccess");
 
     try {
       await FirebaseFirestore.instance
@@ -260,13 +278,13 @@ class Checkout extends StatelessWidget {
           .then((value) async {
         Map<String, dynamic> orderDatas = {
           'userId': user.uid,
-          'cartItems': cartItems,
+          'cartItems': widget.cartItems,
           'totalAmount': totalAmount,
           'address': {
-            'name': address.name,
-            'address': address.address,
-            'state': address.state,
-            'phone': address.phone,
+            'name': widget.address.name,
+            'address': widget.address.address,
+            'state': widget.address.state,
+            'phone': widget.address.phone,
           },
           'orderId': value.id,
           'paymentId': response.paymentId,
@@ -279,19 +297,17 @@ class Checkout extends StatelessWidget {
             .doc(user.uid)
             .collection('orders')
             .doc(value.id)
-            .update(orderDatas);
-
-        final allDocuments = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('cart')
-            .get();
-        for (var item in allDocuments.docs) {
-          await item.reference.delete();
-        }
-
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => PaymentSuccess()));
+            .update(orderDatas)
+            .then((_) async {
+          final allDocuments = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .collection('cart')
+              .get();
+          for (var item in allDocuments.docs) {
+            await item.reference.delete();
+          }
+        });
       });
 
       print("Order added successfully!");
@@ -300,10 +316,7 @@ class Checkout extends StatelessWidget {
     }
   }
 
-  void _handlePaymentError(
-      BuildContext context, PaymentFailureResponse response) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => PaymentFailed()));
+  void _handlePaymentError(PaymentFailureResponse response) {
     print("Payment Error: ${response.message}");
   }
 

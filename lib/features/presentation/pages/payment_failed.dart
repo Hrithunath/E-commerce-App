@@ -17,21 +17,21 @@ class PaymentFailed extends StatelessWidget {
               'https://lottie.host/a11f2a21-7a04-40a8-8ed5-3211f2f0b0ec/O0Q0y1D2e0.json',
               height: 250,
               width: 350),
-          Center(
-            child: const TextCustom(
+          const Center(
+            child: TextCustom(
               text: "Payment Failed",
               fontSize: 30,
               fontWeight: FontWeight.w900,
             ),
           ),
-          Center(
-            child: const TextCustom(
+          const Center(
+            child: TextCustom(
               text: "Please try again",
               fontSize: 25,
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 55,
           ),
           Center(

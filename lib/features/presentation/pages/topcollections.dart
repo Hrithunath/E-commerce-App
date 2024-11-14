@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class Topcollections extends StatelessWidget {
   const Topcollections({super.key});
@@ -31,7 +32,15 @@ class Topcollections extends StatelessWidget {
         future: fetchTopCollections(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: Skeletonizer(
+              enabled: true,
+              child: Container(
+                height: 100,
+                width: double.infinity,
+                color: Colors.grey[300],
+              ),
+            ));
           }
           if (snapshot.hasError) {
             return const Center(child: Text("Error loading data"));
@@ -41,8 +50,8 @@ class Topcollections extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 1,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisSpacing: 1,
+              mainAxisSpacing: 1,
             ),
             itemBuilder: (context, index) {
               var product1 = topCollections[index];
@@ -58,17 +67,29 @@ class Topcollections extends StatelessWidget {
                     ),
                   );
                 },
-                child: Card(
-                  elevation: 5,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(
-                          child: Image.network(
-                        imageList[0],
-                        fit: BoxFit.cover,
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.network(
+                          imageList[0],
+                          fit: BoxFit.cover,
+                        ),
                       )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),

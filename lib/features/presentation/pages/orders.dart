@@ -44,7 +44,6 @@ class MyOrders extends StatelessWidget {
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No orders found.'));
                   } else {
-                    // Flatten all cartItems across orders
                     List<dynamic> allCartItems = [];
                     for (var order in snapshot.data!.docs) {
                       var cartItems =
@@ -59,7 +58,6 @@ class MyOrders extends StatelessWidget {
                         var imageUrl = item['image'] ?? '';
                         var productName = item['productName'] ?? 'Product Name';
                         var price = item['price'] ?? '0';
-                        var quantity = item['quantity'] ?? '1';
                         var size = item['size'] ?? 'N/A';
                         var stock = item['stock'] ?? 'N/A';
                         var productId = item['productId'] ?? 'N/A';
@@ -87,12 +85,6 @@ class MyOrders extends StatelessWidget {
                               color: AppColors.kgreen,
                             ),
                             children: [
-                              ListTile(
-                                title: TextCustom(
-                                  text: "Quantity: $quantity",
-                                  fontSize: 14,
-                                ),
-                              ),
                               ListTile(
                                 title: TextCustom(
                                   text: "Size: $size",

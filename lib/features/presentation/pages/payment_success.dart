@@ -17,21 +17,21 @@ class PaymentSuccess extends StatelessWidget {
               'https://lottie.host/5c09846e-0f86-4fd2-8e0f-df3e0d780015/bAGmD18dit.json',
               height: 250,
               width: 350),
-          Center(
-            child: const TextCustom(
+          const Center(
+            child: TextCustom(
               text: "Payment Done",
               fontSize: 30,
               fontWeight: FontWeight.w900,
             ),
           ),
-          Center(
-            child: const TextCustom(
+          const Center(
+            child: TextCustom(
               text: "Successfully",
               fontSize: 30,
               fontWeight: FontWeight.w900,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 55,
           ),
           Center(
@@ -41,7 +41,9 @@ class PaymentSuccess extends StatelessWidget {
                 child: ButtonCustomized(
                     text: 'Continue',
                     color: AppColors.primarycolor,
-                    onPressed: () {})),
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, "/HomeBottom");
+                    })),
           ),
         ],
       ),
