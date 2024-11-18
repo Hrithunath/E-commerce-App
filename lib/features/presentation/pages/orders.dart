@@ -3,7 +3,9 @@ import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/data/repository/order_servicee.dart';
 import 'package:e_commerce_app/features/domain/repository/order_repository.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
+import 'package:e_commerce_app/features/presentation/pages/order_details.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class MyOrders extends StatelessWidget {
@@ -44,66 +46,92 @@ class MyOrders extends StatelessWidget {
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No orders found.'));
                   } else {
-                    List<dynamic> allCartItems = [];
-                    for (var order in snapshot.data!.docs) {
-                      var cartItems =
-                          order['cartItems'] as List<dynamic>? ?? [];
-                      allCartItems.addAll(cartItems);
-                    }
-
                     return ListView.builder(
-                      itemCount: allCartItems.length,
+                      itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        var item = allCartItems[index];
-                        var imageUrl = item['image'] ?? '';
-                        var productName = item['productName'] ?? 'Product Name';
-                        var price = item['price'] ?? '0';
-                        var size = item['size'] ?? 'N/A';
-                        var stock = item['stock'] ?? 'N/A';
-                        var productId = item['productId'] ?? 'N/A';
+                        var order = snapshot.data!.docs[index];
+                        final orderData =
+                            order.data() as Map<String, dynamic>? ?? {};
+                        final addressMap =
+                            orderData['address'] as Map<String, dynamic>? ?? {};
+                        final address = addressMap['address'] ?? 'No Address';
+                        final name = addressMap['name'] ??
+                            'Unknown Name'; // Corrected access
+                        final phone = addressMap['phone'] ?? 'Unknown Phone';
+                        final state = addressMap['state'] ?? 'Unknown State';
+                        var cartItems =
+                            order['cartItems'] as List<dynamic>? ?? [];
 
-                        return Card(
-                          child: ExpansionTile(
-                            leading: Container(
-                              height: 80,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(imageUrl),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                        var orderId = order['orderId'] ?? 'N/A';
+                        // var paymentId = order['paymentId'] ?? 'N/A';
+                        var status = order['status'] ?? 'Pending';
+                        var timestamp = order['timestamp'] ?? 'N/A';
+                        DateTime date = timestamp.toDate();
+                        String formattedDate =
+                            DateFormat('MMMM d, yyyy').format(date);
+                        var totalAmount = order['totalAmount'] ?? 0;
+
+                        return Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Container(
+                            height: 200,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => OrderDetails(
+                                              orders: order,
+                                              addressMap: addressMap,
+                                              cartItems: cartItems,
+                                            )));
+                              },
+                              child: Card(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                    TextCustom(
+                                      text: orderId,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    TextCustom(
+                                      text: name,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    TextCustom(
+                                      text: "Order at  :$formattedDate",
+                                      fontSize: 14,
+                                      color: AppColors.kgreen,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextCustom(text: 'Order Status'),
+                                        TextCustom(text: '$status')
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextCustom(text: 'items'),
+                                        TextCustom(text: '${cartItems.length}')
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextCustom(text: 'Price'),
+                                        TextCustom(text: '$totalAmount')
+                                      ],
+                                    ),
+                                  ])),
                             ),
-                            title: TextCustom(
-                              text: productName,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            subtitle: TextCustom(
-                              text: "₹$price",
-                              fontSize: 14,
-                              color: AppColors.kgreen,
-                            ),
-                            children: [
-                              ListTile(
-                                title: TextCustom(
-                                  text: "Size: $size",
-                                  fontSize: 14,
-                                ),
-                              ),
-                              ListTile(
-                                title: TextCustom(
-                                  text: "Stock: $stock",
-                                  fontSize: 14,
-                                ),
-                              ),
-                              ListTile(
-                                title: TextCustom(
-                                  text: "Product ID: $productId",
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
                           ),
                         );
                       },

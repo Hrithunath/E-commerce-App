@@ -159,10 +159,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final email = user.email ?? 'No email provided';
           final phone = user.phoneNumber ?? '';
 
-          // // Add more detailed logging here
-          // print('User object is not null');
-          // print('Username: $username');
-          // print('Email: $email');
+          // Add more detailed logging here
+          print('User object is not null');
+          print('Username: $username');
+          print('Email: $email');
 
           // Save user details to Firestore
           final userDoc =

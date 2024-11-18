@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/data/repository/cart_service.dart';
 import 'package:e_commerce_app/features/data/repository/favourite_service.dart';
 import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
+import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/about.dart';
 import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
@@ -64,7 +65,8 @@ class _MyAppState extends State<MyApp> {
                   CartBloc(RepositoryProvider.of<CartRepository>(context))),
           BlocProvider(
               create: (context) =>
-                  FavouriteBloc(FavouritesRepositoryImplementation())),
+                  FavouriteBloc(FavouritesRepositoryImplementation())
+                    ..add(LoadFavouritesEvent())),
           BlocProvider(create: (context) => AddressCheckboxBloc()),
           BlocProvider(
               create: (context) =>

@@ -171,7 +171,7 @@ class Favourite extends StatelessWidget {
             );
           }
 
-          return Text('sinan');
+          return const SizedBox.shrink();
         },
       ),
     );

@@ -248,12 +248,50 @@ class _CheckoutState extends State<Checkout> {
       return;
     }
 
-    // Prepare order data to save in Firestore
+    // Prepare the total amount
     double totalAmount = (widget.cartData?['totalAmount'] as num).toDouble();
 
+    // Consolidate cart items: Combine products with the same productId and size, and sum their quantities
+    Map<String, Map<String, dynamic>> consolidatedItems = {};
+
+    for (var item in widget.cartItems) {
+      String productId = item['productId'];
+      String size = item['size'];
+
+      // Create a unique key based on productId and size
+      String key = '$productId-$size';
+
+      // Check if the item already exists in the consolidated map
+      if (consolidatedItems.containsKey(key)) {
+        consolidatedItems[key]!['quantity'] =
+            (int.parse(consolidatedItems[key]!['quantity']) +
+                    int.parse(item['quantity']))
+                .toString();
+      } else {
+        // If not, add it to the map
+        consolidatedItems[key] = {
+          'cartId': item['cartId'],
+          'image': item['image'],
+          'price': item['price'],
+          'productId': productId,
+          'productName': item['productName'],
+          'quantity': item['quantity'],
+          'size': size,
+          'stock': item['stock'],
+        };
+      }
+    }
+
+    // Convert consolidated map back to a list format for Firestore
+    List<Map<String, dynamic>> consolidatedCartItems = [];
+    consolidatedItems.forEach((key, value) {
+      consolidatedCartItems.add(value);
+    });
+
+    // Prepare the order data to save in Firestore
     Map<String, dynamic> orderData = {
       'userId': user.uid,
-      'cartItems': widget.cartItems,
+      'cartItems': consolidatedCartItems, // Use consolidated cart items here
       'totalAmount': totalAmount,
       'address': {
         'name': widget.address.name,
@@ -266,19 +304,23 @@ class _CheckoutState extends State<Checkout> {
       'timestamp': FieldValue.serverTimestamp(),
       'status': 'Pending',
     };
-    print('AFFSSFFFF\n\n\n\n');
+
+    // Navigate to the success screen after the payment
     Navigator.pushReplacementNamed(context, "/PaymentSuccess");
 
     try {
+      // Add the order data to Firestore under the user's orders
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .collection('orders')
           .add(orderData)
           .then((value) async {
+        // Update the order data with the orderId after it's created
         Map<String, dynamic> orderDatas = {
           'userId': user.uid,
-          'cartItems': widget.cartItems,
+          'cartItems':
+              consolidatedCartItems, // Use consolidated cart items here
           'totalAmount': totalAmount,
           'address': {
             'name': widget.address.name,
@@ -292,6 +334,7 @@ class _CheckoutState extends State<Checkout> {
           'status': 'Pending',
         };
 
+        // Update the order document with the correct orderId
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -299,11 +342,13 @@ class _CheckoutState extends State<Checkout> {
             .doc(value.id)
             .update(orderDatas)
             .then((_) async {
+          // Delete items from the cart collection once the order is confirmed
           final allDocuments = await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .collection('cart')
               .get();
+
           for (var item in allDocuments.docs) {
             await item.reference.delete();
           }
