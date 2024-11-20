@@ -196,7 +196,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const TextCustom(
-                      text: "Shown:",
+                      text: "Category:",
                       fontSize: 17,
                     ),
                     TextCustom(
@@ -207,14 +207,24 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(17),
-                child: TextCustom(
-                  text: "${widget.productDetails["productDescription"]}",
-                  color: AppColors.kgrey,
-                  height: 1.5,
-                  fontSize: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const TextCustom(
+                      text: 'Product Description',
+                      fontSize: 17,
+                    ),
+                    const SizedBox(height: 10),
+                    TextCustom(
+                      text: "${widget.productDetails["productDescription"]}",
+                      color: AppColors.kgrey,
+                      height: 1.5,
+                      fontSize: 16,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 10),

@@ -5,6 +5,7 @@ import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/about.dart';
+import 'package:e_commerce_app/features/presentation/pages/payment_failed.dart';
 import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
 import 'package:e_commerce_app/firebase_options.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';
@@ -90,6 +91,7 @@ class _MyAppState extends State<MyApp> {
                   ),
               "/About": (context) => const About(),
               "/PaymentSuccess": (context) => const PaymentSuccess(),
+              "/PaymentFailed": (context) => const PaymentFailed(),
             }),
       ),
     );

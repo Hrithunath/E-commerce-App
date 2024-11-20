@@ -362,6 +362,7 @@ class _CheckoutState extends State<Checkout> {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    Navigator.pushReplacementNamed(context, "/PaymentFailed");
     print("Payment Error: ${response.message}");
   }
 

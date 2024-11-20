@@ -1,6 +1,6 @@
-import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
 
 class SplashWrapper extends StatelessWidget {
   const SplashWrapper({super.key});
@@ -20,25 +20,26 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthenticatedState) {
-            Navigator.pushReplacementNamed(context, "/HomeBottom");
-          } else if (state is UnAuthenticatedState) {
-            Navigator.pushReplacementNamed(context, "/Login");
-          }
-        },
-        child: Scaffold(
-          body: SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                    "assets/images/leather-shoes-wooden-background_1203-7617.png")
-              ],
+      listener: (context, state) {
+        if (state is AuthenticatedState) {
+          Navigator.pushReplacementNamed(context, "/HomeBottom");
+        } else if (state is UnAuthenticatedState) {
+          Navigator.pushReplacementNamed(context, "/Login");
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 16 / 33, // Adjust the aspect ratio as needed
+              child: Image.asset(
+                "assets/images/SmartStride.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

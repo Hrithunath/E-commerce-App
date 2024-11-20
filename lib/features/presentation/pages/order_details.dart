@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails(
@@ -18,6 +19,7 @@ class OrderDetails extends StatelessWidget {
     for (var cartItem in cartItems) {
       final price = double.tryParse(cartItem['price'].toString()) ?? 0.0;
       final quantity = cartItem['quantity'] is int ? cartItem['quantity'] : 1;
+
       totalCartPrice += price * quantity;
     }
     return Scaffold(
@@ -47,6 +49,11 @@ class OrderDetails extends StatelessWidget {
                             text: cartItem['productName'] ?? 'No Name'),
                         subtitle:
                             TextCustom(text: '₹${cartItem['price'] ?? '0'}'),
+                        trailing: TextCustom(
+                          text: orders['status'],
+                          color: Colors.blue,
+                          fontSize: 20,
+                        ),
                       ),
                     );
                   }),
