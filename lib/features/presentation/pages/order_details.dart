@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails(

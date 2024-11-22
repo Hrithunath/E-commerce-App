@@ -87,50 +87,55 @@ class MyOrders extends StatelessWidget {
                                             )));
                               },
                               child: Card(
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                    TextCustom(
-                                      text: orderId,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    TextCustom(
-                                      text: name,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    TextCustom(
-                                      text: "Order at  :$formattedDate",
-                                      fontSize: 14,
-                                      color: AppColors.kgreen,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextCustom(text: 'Order Status'),
-                                        TextCustom(text: '$status')
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextCustom(text: 'items'),
-                                        TextCustom(text: '${cartItems.length}')
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextCustom(text: 'Price'),
-                                        TextCustom(text: '$totalAmount')
-                                      ],
-                                    ),
-                                  ])),
+                                  child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextCustom(
+                                        text: orderId,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      TextCustom(
+                                        text: name,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      TextCustom(
+                                        text: "Order at  :$formattedDate",
+                                        fontSize: 14,
+                                        color: AppColors.kgreen,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const TextCustom(
+                                              text: 'Order Status'),
+                                          TextCustom(text: '$status')
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const TextCustom(text: 'items'),
+                                          TextCustom(
+                                              text: '${cartItems.length}')
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const TextCustom(text: 'Price'),
+                                          TextCustom(text: '$totalAmount')
+                                        ],
+                                      ),
+                                    ]),
+                              )),
                             ),
                           ),
                         );

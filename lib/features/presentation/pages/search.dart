@@ -18,7 +18,6 @@ class SearchingProducts extends StatelessWidget {
             hintText: "Search Product",
             prefixIcon: Icons.search,
             onChanged: (query) {
-              // Emit the search event directly via the bloc when the query changes
               context
                   .read<ProductSearchBloc>()
                   .add(SearchByProductEvent(query: query));
