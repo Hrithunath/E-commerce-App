@@ -38,7 +38,10 @@ class Login extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthenticatedState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User authenticated successfully!')),
+            const SnackBar(
+              content: Text('User authenticated successfully!'),
+              backgroundColor: Colors.green,
+            ),
           );
           Navigator.pushNamedAndRemoveUntil(
               context, "/HomeBottom", (route) => false);
@@ -59,7 +62,7 @@ class Login extends StatelessWidget {
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             body: Padding(
-              padding: EdgeInsets.all(screenWidth * 0.05),
+              padding: EdgeInsets.all(screenWidth * 0.07),
               child: Form(
                 key: formkey,
                 child: SingleChildScrollView(
@@ -100,9 +103,9 @@ class Login extends StatelessWidget {
                       ButtonCustomized(
                         text: "Sign in",
                         color: AppColors.primarycolor,
-                        width: screenWidth * 0.7,
-                        height: screenHeight * 0.07,
-                        borderRadius: 10,
+                        width: screenWidth * 0.6,
+                        height: screenHeight * 0.06,
+                        borderRadius: 50,
                         onPressed: () async {
                           if (formkey.currentState!.validate()) {
                             UserModel user = UserModel(

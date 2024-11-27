@@ -32,12 +32,14 @@ class CustomProductCategory extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: TextCustom(
-                  text: category['categoryName'] ?? 'Unknown',
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                padding: const EdgeInsets.only(left: 15),
+                child: Center(
+                  child: TextCustom(
+                    text: category['categoryName'] ?? 'Unknown',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

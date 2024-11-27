@@ -10,6 +10,7 @@ Future<void> addAddress(
     TextEditingController nameController,
     TextEditingController addressController,
     TextEditingController pinController,
+    TextEditingController districtController,
     TextEditingController stateController,
     TextEditingController phoneController,
     GlobalKey<FormState> formkey) async {
@@ -23,6 +24,7 @@ Future<void> addAddress(
           name: nameController.text,
           address: addressController.text,
           pincode: pinController.text,
+          district: districtController.text,
           state: stateController.text,
           phone: phoneController.text,
         ),
@@ -35,7 +37,10 @@ Future<void> addAddress(
       phoneController.clear();
       showSnackBarMessage(context, "Address added successfully", Colors.green);
       Navigator.of(context).pop(MaterialPageRoute(
-          builder: (context) => ShippedAddress(userId: userId!)));
+          builder: (context) => ShippedAddress(
+                userId: userId!,
+                // isfromProfile: false,
+              )));
     } catch (e) {
       showSnackBarMessage(context, "Failed to add address: $e", Colors.red);
     }

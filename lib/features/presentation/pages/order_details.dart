@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -22,12 +23,18 @@ class OrderDetails extends StatelessWidget {
       totalCartPrice += price * quantity;
     }
     return Scaffold(
+        backgroundColor: AppColors.bgColor,
         appBar: AppBar(
-          title: const Text('Order Details'),
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            'Order Details',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: AppColors.primarycolor,
         ),
         body: Column(
           children: [
-            const TextCustom(text: 'Product'),
             Expanded(
               child: ListView.builder(
                   itemCount: cartItems.length,
@@ -45,9 +52,14 @@ class OrderDetails extends StatelessWidget {
                                   fit: BoxFit.cover)),
                         ),
                         title: TextCustom(
-                            text: cartItem['productName'] ?? 'No Name'),
-                        subtitle:
-                            TextCustom(text: '₹${cartItem['price'] ?? '0'}'),
+                          text: cartItem['productName'] ?? 'No Name',
+                          fontWeight: FontWeight.w500,
+                        ),
+                        subtitle: TextCustom(
+                          text: '₹${cartItem['price'] ?? '0'}',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
                         trailing: TextCustom(
                           text: orders['status'],
                           color: Colors.blue,

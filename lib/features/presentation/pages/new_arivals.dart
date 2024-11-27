@@ -32,15 +32,28 @@ class NewArivals extends StatelessWidget {
         future: fetchNewArrivals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: Skeletonizer(
-              enabled: true,
-              child: Container(
-                height: 100,
-                width: double.infinity,
-                color: Colors.grey[300],
+            // Display skeleton loaders
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-            ));
+              itemCount: 4, // Number of skeleton placeholders
+              itemBuilder: (context, index) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                );
+              },
+            );
           }
           if (snapshot.hasError) {
             return const Center(child: Text("Error loading data"));

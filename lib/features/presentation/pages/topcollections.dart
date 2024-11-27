@@ -32,31 +32,49 @@ class Topcollections extends StatelessWidget {
         future: fetchTopCollections(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: Skeletonizer(
-              enabled: true,
-              child: Container(
-                height: 100,
-                width: double.infinity,
-                color: Colors.grey[300],
+            // Display skeleton loaders
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-            ));
+              itemCount: 4, // Number of skeleton items to display
+              itemBuilder: (context, index) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                );
+              },
+            );
           }
+
           if (snapshot.hasError) {
             return const Center(child: Text("Error loading data"));
           }
+
           var topCollections = snapshot.data!;
+
+          // Display actual data
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 1,
-              crossAxisSpacing: 1,
-              mainAxisSpacing: 1,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
               var product1 = topCollections[index];
               List<dynamic> imageList = product1['uploadImages'] ??
                   ['https://via.placeholder.com/100'];
+
               return InkWell(
                 onTap: () {
                   Navigator.push(
@@ -84,13 +102,14 @@ class Topcollections extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.network(
-                          imageList[0],
-                          fit: BoxFit.cover,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network(
+                            imageList[0],
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      )),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -98,7 +117,7 @@ class Topcollections extends StatelessWidget {
                           children: [
                             TextCustom(
                               text: product1['productName'] ?? "No Name",
-                              fontSize: 20,
+                              fontSize: 15,
                               fontWeight: FontWeight.w400,
                             ),
                             TextCustom(

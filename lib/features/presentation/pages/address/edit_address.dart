@@ -22,6 +22,7 @@ class _EditAddressState extends State<EditAddress> {
   late TextEditingController nameController;
   late TextEditingController addressController;
   late TextEditingController pinController;
+  late TextEditingController districtController;
   late TextEditingController stateController;
   late TextEditingController phoneController;
 
@@ -32,6 +33,7 @@ class _EditAddressState extends State<EditAddress> {
     nameController = TextEditingController(text: widget.address.name);
     addressController = TextEditingController(text: widget.address.address);
     pinController = TextEditingController(text: widget.address.pincode);
+    districtController = TextEditingController(text: widget.address.district);
     stateController = TextEditingController(text: widget.address.state);
     phoneController = TextEditingController(text: widget.address.phone);
   }
@@ -42,6 +44,7 @@ class _EditAddressState extends State<EditAddress> {
     nameController.dispose();
     addressController.dispose();
     pinController.dispose();
+    districtController.dispose();
     stateController.dispose();
     phoneController.dispose();
     super.dispose();
@@ -90,6 +93,14 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                   const SizedBox(height: 10),
                   Textformfeildcustom(
+                    label: "District",
+                    prefixIcon: Icons.business,
+                    keyboardType: TextInputType.name,
+                    controller: districtController, // Connect controller
+                    validator: (value) => Validator.validateText(value),
+                  ),
+                  const SizedBox(height: 10),
+                  Textformfeildcustom(
                     label: "State",
                     prefixIcon: Icons.business,
                     controller: stateController,
@@ -128,6 +139,7 @@ class _EditAddressState extends State<EditAddress> {
                                 name: nameController.text,
                                 address: addressController.text,
                                 pincode: pinController.text,
+                                district: districtController.text,
                                 state: stateController.text,
                                 phone: phoneController.text,
                               ),

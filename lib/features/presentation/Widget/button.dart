@@ -8,31 +8,37 @@ class ButtonCustomized extends StatelessWidget {
   final double borderRadius;
   final double? width;
   final double? height;
-   const ButtonCustomized({super.key, 
-    required this.text,
-    required this.onPressed,
-    this.color,
-    this.textStyle,
-     this.borderRadius = 8.0,
-     this.width,
-     this.height,
-  });
+  final Icon? icon;
+  const ButtonCustomized(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.color,
+      this.textStyle,
+      this.borderRadius = 8.0,
+      this.width,
+      this.height,
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       height: height,
-      child: ElevatedButton(
+      child: ElevatedButton.icon(
+          icon: icon,
           onPressed: onPressed,
-          style: ElevatedButton.styleFrom(backgroundColor: color,
-      
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
-          ),),
-          child: Text(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+          ),
+          label: Text(
             text,
-            style:  const TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.w500),)),
+            style: const TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
+          )),
     );
   }
 }

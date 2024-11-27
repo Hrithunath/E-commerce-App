@@ -25,6 +25,7 @@ class ShippingAddressImplement implements ShippingAddress {
         "name": address.name,
         "address": address.address,
         "pincode": address.pincode,
+        "district": address.district,
         "state": address.state,
         "phone": address.phone,
       });
@@ -91,6 +92,7 @@ class ShippingAddressImplement implements ShippingAddress {
         "name": address.name,
         "address": address.address,
         "pincode": address.pincode,
+        "district": address.district,
         "state": address.state,
         "phone": address.phone,
       });

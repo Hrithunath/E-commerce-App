@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:466231871448:android:b97ca61832e33403ed54ad",
+        "mobilesdk_app_id": "1:466231871448:android:61c18da01e58f2eeed54ad",
         "android_client_info": {
-          "package_name": "com.example.e_commerce_app"
+          "package_name": "com.hrithu.shop"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "466231871448-nj9l9jo5m81e1hsh2bhcm1j2rv1rng1b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.e_commerce_app",
-            "certificate_hash": "dde9c14ed226e43a1f0c38fc8d3df8ae7f602cfc"
-          }
-        },
         {
           "client_id": "466231871448-tlcqnr2omuvehfjldcnmo9gjjcuoplsg.apps.googleusercontent.com",
           "client_type": 3

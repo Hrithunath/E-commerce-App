@@ -47,7 +47,7 @@ class _TopCategoryState extends State<TopCategory> {
                 child: Skeletonizer(
               enabled: true,
               child: Container(
-                height: 100,
+                height: double.infinity,
                 width: double.infinity,
                 color: Colors.grey[300],
               ),
@@ -58,8 +58,7 @@ class _TopCategoryState extends State<TopCategory> {
           }
           var categories = snapshot.data!;
           if (categories.isNotEmpty && selectedCategoryId.isEmpty) {
-            selectedCategoryId =
-                categories[0]['id']; // Default to first category
+            selectedCategoryId = categories[0]['id'];
           }
 
           return Column(
@@ -112,7 +111,7 @@ class _TopCategoryState extends State<TopCategory> {
                           child: Skeletonizer(
                         enabled: true,
                         child: Container(
-                          height: 100,
+                          height: double.infinity,
                           width: double.infinity,
                           color: Colors.grey[300],
                         ),

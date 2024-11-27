@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/core/Theme/app_colors.dart';
+import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_alert_dialog.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_ev
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class Favourite extends StatelessWidget {
@@ -16,21 +18,123 @@ class Favourite extends StatelessWidget {
     return SafeArea(
       child: BlocBuilder<FavouriteBloc, FavouriteState>(
         builder: (context, state) {
+          // Loading State: Show Skeletonizer
           if (state is FavouriteLoading) {
             return Center(
-                child: Skeletonizer(
-              enabled: true,
-              child: Container(
-                height: 100,
-                width: double.infinity,
-                color: Colors.grey[300],
+              child: Skeletonizer(
+                enabled: true,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                  ),
+                  itemCount: 4, // Number of skeleton items
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1,
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  color: Colors
+                                      .grey[300], // Skeleton gray background
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 2, bottom: 0, left: 8),
+                              child: Container(
+                                color: Colors
+                                    .grey[300], // Skeleton text background
+                                height: 20, // Skeleton for the product name
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                color: Colors.grey[300], // Skeleton for price
+                                height: 18,
+                                width: 60, // Skeleton price width
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ));
-          } else if (state is FavouriteSuccess) {
+            );
+          }
+
+          // Success State: Display Favourites
+          else if (state is FavouriteSuccess) {
             final favourites = state.favourites;
             if (favourites.isEmpty) {
-              return const Center(
-                child: Text("No favourites added."),
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.network(
+                      'https://lottie.host/8d7f4053-3745-423f-b26c-cae2d62ad658/Ymoz1NGSX8.json',
+                      height: 200,
+                    ),
+                    const SizedBox(height: 20),
+                    const TextCustom(
+                      text: "You haven't added any",
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    const TextCustom(
+                      text: "product yet",
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const TextCustom(
+                      text: "Click ❤️ to save products",
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ButtonCustomized(
+                        height: 40,
+                        width: 190,
+                        text: 'Find items to save',
+                        color: AppColors.primarycolor,
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/HomeBottom", (route) => false);
+                        })
+                  ],
+                ),
               );
             }
 
@@ -41,7 +145,7 @@ class Favourite extends StatelessWidget {
                   child: const Padding(
                     padding: EdgeInsets.all(16.0),
                     child: TextCustom(
-                      text: "My Favourite",
+                      text: "Favourite",
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
                     ),
@@ -153,7 +257,10 @@ class Favourite extends StatelessWidget {
                 ),
               ],
             );
-          } else if (state is FavouriteError) {
+          }
+
+          // Error State: Show error message
+          else if (state is FavouriteError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

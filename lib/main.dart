@@ -3,9 +3,9 @@ import 'package:e_commerce_app/features/data/repository/cart_service.dart';
 import 'package:e_commerce_app/features/data/repository/favourite_service.dart';
 import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
+import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/about.dart';
-import 'package:e_commerce_app/features/presentation/pages/payment_failed.dart';
 import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
 import 'package:e_commerce_app/firebase_options.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';
@@ -72,6 +72,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
               create: (context) =>
                   ProductSearchBloc(FirebaseFirestore.instance)),
+          BlocProvider(create: (context) => ImagePrevBloc())
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -88,10 +89,10 @@ class _MyAppState extends State<MyApp> {
               "/MyOrders": (context) => const MyOrders(),
               "/ShippedAddress": (context) => ShippedAddress(
                     userId: userId,
+                    // isfromProfile: false,
                   ),
               "/About": (context) => const About(),
               "/PaymentSuccess": (context) => const PaymentSuccess(),
-              "/PaymentFailed": (context) => const PaymentFailed(),
             }),
       ),
     );

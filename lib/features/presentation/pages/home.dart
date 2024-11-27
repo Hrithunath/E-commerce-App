@@ -188,57 +188,53 @@ class Home extends StatelessWidget {
             height: 10,
           ),
           // First Carousel (Promotional Banners)
-          SizedBox(
-            height: 330,
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: fetchBanner(),
-              builder: (context, snapshot) {
-                // Handle loading state
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Skeletonizer(
-                    enabled: true,
-                    child: Container(
-                      height: 330,
-                      color: Colors.grey[300],
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text("No banners found");
-                }
-
-                var banners = snapshot.data!;
-
-                return CarouselSlider(
-                  items: banners.map((banner) {
-                    String imageUrl = banner['imageurl'] ??
-                        'https://via.placeholder.com/350x330';
-                    print('Image URL: $imageUrl');
-
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 7),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
+          FutureBuilder<List<Map<String, dynamic>>>(
+            future: fetchBanner(),
+            builder: (context, snapshot) {
+              // Handle loading state
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
                     height: 330,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    enlargeCenterPage: false,
-                    aspectRatio: 16 / 9,
+                    color: Colors.grey[300],
                   ),
                 );
-              },
-            ),
+              } else if (snapshot.hasError) {
+                return Text("Error: ${snapshot.error}");
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Text("No banners found");
+              }
+
+              var banners = snapshot.data!;
+
+              return CarouselSlider(
+                items: banners.map((banner) {
+                  String imageUrl = banner['imageurl'] ??
+                      'https://via.placeholder.com/350x330';
+                  print('Image URL: $imageUrl');
+
+                  return Container(
+                    width: MediaQuery.of(context).size.width * 1.0,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                options: CarouselOptions(
+                  height: 300,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  aspectRatio: 16 / 9,
+                ),
+              );
+            },
           ),
 
           const SizedBox(height: 20),

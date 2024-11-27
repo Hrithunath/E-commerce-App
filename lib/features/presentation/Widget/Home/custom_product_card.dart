@@ -23,7 +23,7 @@ class CustomProductCard extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: Color.fromARGB(242, 243, 247, 255),
               // border: Border.all(color: Colors.black54),
               borderRadius: BorderRadius.all(Radius.circular(17)),
               boxShadow: [

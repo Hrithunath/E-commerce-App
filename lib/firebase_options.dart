@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBWc_gu-28lmUAnIT0wpY5KCos9qxrZpdg',
-    appId: '1:466231871448:android:b97ca61832e33403ed54ad',
+    appId: '1:466231871448:android:61c18da01e58f2eeed54ad',
     messagingSenderId: '466231871448',
     projectId: 'ecommerce-32415',
     databaseURL: 'https://ecommerce-32415-default-rtdb.asia-southeast1.firebasedatabase.app',

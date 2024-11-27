@@ -9,6 +9,8 @@ import 'package:e_commerce_app/features/presentation/bloc/cart/cart_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
+import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
+import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,18 +35,28 @@ class _ProductDetailsState extends State<ProductDetails> {
             children: [
               Stack(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          widget.productDetails["uploadImages"][0].toString(),
+                  BlocBuilder<ImagePrevBloc, ImagePrevState>(
+                    builder: (context, state) {
+                      int selectedIndex = 0;
+                      if (state is ImagePrevSelected) {
+                        selectedIndex = state.selectedIndex;
+                      }
+                      return Container(
+                        width: double.infinity,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              widget.productDetails["uploadImages"]
+                                      [selectedIndex]
+                                  .toString(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                   Positioned(
                     top: 10,
@@ -66,7 +78,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             isFavourite
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            color: isFavourite ? AppColors.kred : Colors.white,
+                            color: isFavourite ? AppColors.kred : Colors.grey,
                             size: 30,
                           ),
                           onPressed: () {
@@ -121,16 +133,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              widget.productDetails["uploadImages"][index]
-                                  .toString(),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<ImagePrevBloc>().add(ImagePrev(index));
+                        },
+                        child: Container(
+                          height: 130,
+                          width: 130,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                widget.productDetails["uploadImages"][index]
+                                    .toString(),
+                              ),
                             ),
                           ),
                         ),
@@ -230,6 +247,10 @@ class _ProductDetailsState extends State<ProductDetails> {
               const SizedBox(height: 10),
               Center(
                 child: ButtonCustomized(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
                   text: "Add To Cart",
                   color: AppColors.primarycolor,
                   height: 50,

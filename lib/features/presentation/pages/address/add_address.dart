@@ -15,6 +15,7 @@ class AddAddress extends StatelessWidget {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
   final pinController = TextEditingController();
+  final districtController = TextEditingController();
   final stateController = TextEditingController();
   final phoneController = TextEditingController();
 
@@ -60,6 +61,14 @@ class AddAddress extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Textformfeildcustom(
+                    label: "District",
+                    prefixIcon: Icons.business,
+                    keyboardType: TextInputType.name,
+                    controller: districtController, // Connect controller
+                    validator: (value) => Validator.validateText(value),
+                  ),
+                  const SizedBox(height: 10),
+                  Textformfeildcustom(
                     label: "State",
                     prefixIcon: Icons.business,
                     keyboardType: TextInputType.text,
@@ -94,6 +103,7 @@ class AddAddress extends StatelessWidget {
                             nameController,
                             addressController,
                             pinController,
+                            districtController,
                             stateController,
                             phoneController,
                             formkey);

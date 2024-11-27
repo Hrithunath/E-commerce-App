@@ -46,11 +46,11 @@ class Register extends StatelessWidget {
 
       return SafeArea(
         child: Scaffold(
-          body: Padding(
-            padding: EdgeInsets.only(top: screenHeight * 0.02),
-            child: Form(
-              key: formkey,
-              child: SingleChildScrollView(
+          body: Form(
+            key: formkey,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(screenWidth * 0.07),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -105,9 +105,9 @@ class Register extends StatelessWidget {
                     ButtonCustomized(
                       text: "Sign Up",
                       color: AppColors.primarycolor,
-                      width: screenWidth * 0.8,
-                      height: screenHeight * 0.07,
-                      borderRadius: 10,
+                      width: screenWidth * 0.6,
+                      height: screenHeight * 0.06,
+                      borderRadius: 50,
                       onPressed: () async {
                         if (formkey.currentState!.validate()) {
                           UserModel user = UserModel(
@@ -124,13 +124,13 @@ class Register extends StatelessWidget {
                     SizedBox(width: screenWidth * 0.3),
                     TextCustom(
                       text: "Do you have an account? ",
-                      fontSize: screenHeight * 0.018,
+                      fontSize: screenHeight * 0.02,
                       fontWeight: FontWeight.w300,
                     ),
                     TextCustom(
                       onTap: () => Navigator.pushNamed(context, "/Login"),
                       text: "Sign in",
-                      fontSize: screenHeight * 0.018,
+                      fontSize: screenHeight * 0.02,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primarycolor,
                     ),

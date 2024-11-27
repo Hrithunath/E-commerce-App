@@ -5,6 +5,7 @@ class AddressModel {
   final String name;
   final String address;
   final String pincode;
+  final String district;
   final String state;
   final String phone;
 
@@ -13,6 +14,7 @@ class AddressModel {
     required this.name,
     required this.address,
     required this.pincode,
+    required this.district,
     required this.state,
     required this.phone,
   });
@@ -23,6 +25,7 @@ class AddressModel {
       "name": name,
       "address": address,
       "pincode": pincode,
+      "district": district,
       "state": state,
       "phone": phone,
     };
@@ -36,6 +39,7 @@ class AddressModel {
       name: json["name"] ?? 'No Name',
       address: json["address"] ?? 'No Address',
       pincode: json["pincode"] ?? 'No Pincode',
+      district: json["district"] ?? 'No District',
       state: json["state"] ?? 'No State',
       phone: json["phone"] ?? 'No Phone',
     );

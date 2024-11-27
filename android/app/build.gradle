@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.e_commerce_app"
+    namespace = "com.hrithu.shop"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.e_commerce_app"
+        applicationId = "com.hrithu.shop"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
@@ -46,23 +46,25 @@ android {
 
 
    signingConfigs {
-        release {
-            keyAlias = keystoreProperties['keyAlias']
-            keyPassword = keystoreProperties['keyPassword']
-            storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword = keystoreProperties['storePassword']
-        }
+    release {
+        keyAlias = "upload"  // Directly specify your key alias
+        keyPassword = "123456"  // Directly specify your key password
+        storeFile = file("/home/hrithunath/upload-keystore.jks")  // Direct path to the keystore file
+        storePassword = "123456"  // Directly specify your store password
+
+        // Debugging output to confirm values
+        println "keyAlias: upload"
+        println "storeFile: /home/hrithunath/upload-keystore.jks"
+        println "Absolute storeFile path: ${storeFile.absolutePath}"
     }
+}
+
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now,
-            // so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
-            signingConfig = signingConfigs.release
             signingConfig signingConfigs.release
-        minifyEnabled true
-        shrinkResources true
+        minifyEnabled false
+        shrinkResources false
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -71,7 +73,12 @@ android {
 flutter {
     source = "../.."
 }
-
-dependencies {}
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1' // For Theme.AppCompat.NoActionBar
+    implementation 'androidx.core:core-ktx:1.10.1'      // Kotlin extensions
+    implementation 'com.google.firebase:firebase-bom:32.2.0' // Firebase BOM
+    implementation 'com.google.firebase:firebase-analytics-ktx' // Firebase Analytics
+    implementation 'androidx.multidex:multidex:2.0.1'  // MultiDex support
+}
 
 

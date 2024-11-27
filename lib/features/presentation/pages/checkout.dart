@@ -13,6 +13,7 @@ class Checkout extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
   final Map<String, Object>? cartData;
   final AddressModel address;
+
   const Checkout(
       {super.key,
       required this.cartItems,
@@ -67,7 +68,7 @@ class _CheckoutState extends State<Checkout> {
                   // var cartItem = (cartData!['cartItems'] as List)[index];
                   return Card(
                     child: SizedBox(
-                      height: 100,
+                      height: 70,
                       child: ListTile(
                         leading: Container(
                           height: 100,
@@ -81,12 +82,14 @@ class _CheckoutState extends State<Checkout> {
                           ),
                         ),
                         title: TextCustom(
-                          text: "₹${item['productName'] ?? 0}",
+                          text: "${item['productName'] ?? 0}",
                           fontSize: 19,
                           color: AppColors.kgreen,
                         ),
                         subtitle: TextCustom(
                           text: "₹${item['price'] ?? 0}",
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -187,18 +190,27 @@ class _CheckoutState extends State<Checkout> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const TextCustom(
-                            text: "Total Amount",
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          TextCustom(
-                            text: " ₹${widget.cartData?['totalAmount']}",
-                          ),
-                        ],
+                      BlocBuilder<CartBloc, CartState>(
+                        builder: (context, state) {
+                          final totalSum = state is CartLoadedState
+                              ? getTotalSum(state) +
+                                  Checkout.shippingCharges +
+                                  Checkout.importCharges
+                              : 0.0;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextCustom(
+                                text: "Total Price",
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              TextCustom(
+                                text: " ₹$totalSum",
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 20),
                       const SizedBox(height: 20),
@@ -290,7 +302,7 @@ class _CheckoutState extends State<Checkout> {
     // Prepare the order data to save in Firestore
     Map<String, dynamic> orderData = {
       'userId': user.uid,
-      'cartItems': consolidatedCartItems, // Use consolidated cart items here
+      'cartItems': consolidatedCartItems,
       'totalAmount': totalAmount,
       'address': {
         'name': widget.address.name,
@@ -361,7 +373,7 @@ class _CheckoutState extends State<Checkout> {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    Navigator.pushReplacementNamed(context, "/PaymentFailed");
+    Navigator.pushReplacementNamed(context, "/HomeBottom");
     print("Payment Error: ${response.message}");
   }
 

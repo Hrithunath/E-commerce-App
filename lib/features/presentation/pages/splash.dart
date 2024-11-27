@@ -31,7 +31,7 @@ class SplashScreen extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: AspectRatio(
-              aspectRatio: 16 / 33, // Adjust the aspect ratio as needed
+              aspectRatio: 16 / 33,
               child: Image.asset(
                 "assets/images/SmartStride.png",
                 fit: BoxFit.cover,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/data/repository/order_servicee.dart';
 import 'package:e_commerce_app/features/domain/repository/order_repository.dart';
+import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/order_details.dart';
 import 'package:flutter/material.dart';
@@ -16,18 +17,19 @@ class MyOrders extends StatelessWidget {
     final OrderRepository orderRepository = OrderRepositoryImplementation();
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(242, 243, 247, 255),
+      appBar: AppBar(
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: AppColors.primarycolor,
+        title: const TextCustom(
+          text: "My Orders",
+          color: Colors.white,
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: Theme.of(context).appBarTheme.backgroundColor,
-              padding: const EdgeInsets.all(16.0),
-              child: const TextCustom(
-                text: "My Orders",
-                fontSize: 23,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             Expanded(
               child: FutureBuilder<QuerySnapshot>(
                 future: orderRepository.fetchOrderDetails(),
@@ -44,7 +46,36 @@ class MyOrders extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('No orders found.'));
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Image.asset(
+                            'assets/images/order.webp',
+                            width: 200,
+                            height: 200,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const TextCustom(
+                          text: 'You have no orders',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ButtonCustomized(
+                            color: AppColors.primarycolor,
+                            text: 'Start Shopping',
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                  context, "/HomeBottom");
+                            })
+                      ],
+                    );
                   } else {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
