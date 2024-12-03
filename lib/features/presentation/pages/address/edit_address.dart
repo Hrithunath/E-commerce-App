@@ -54,9 +54,12 @@ class _EditAddressState extends State<EditAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: TextCustom(text: "Edit  Address"),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: TextCustom(
+          text: "Edit Address",
+          color: Colors.white,
         ),
+        centerTitle: true,
         backgroundColor: AppColors.primarycolor,
       ),
       body: SafeArea(

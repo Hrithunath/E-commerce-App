@@ -5,7 +5,7 @@ import 'package:e_commerce_app/features/domain/repository/cart_repository.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
-import 'package:e_commerce_app/features/presentation/pages/about.dart';
+import 'package:e_commerce_app/features/presentation/pages/about/about.dart';
 import 'package:e_commerce_app/features/presentation/pages/payment_success.dart';
 import 'package:e_commerce_app/firebase_options.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';

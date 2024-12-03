@@ -32,9 +32,10 @@ class ShippedAddress extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: AppColors.primarycolor,
         title: const TextCustom(
-          text: "Add Address",
+          text: "Address",
           color: Colors.white,
         ),
         centerTitle: true,

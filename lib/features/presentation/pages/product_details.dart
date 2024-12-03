@@ -10,7 +10,6 @@ import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bl
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
 import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
-import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -198,33 +197,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               const SizedBox(height: 15),
-              const Padding(
-                padding: EdgeInsets.only(left: 17),
-                child: TextCustom(
-                  text: "Specification",
-                  fontSize: 17,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, left: 17, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextCustom(
-                      text: "Category:",
-                      fontSize: 17,
-                    ),
-                    TextCustom(
-                      text: "${widget.productDetails["categoryName"]}",
-                      fontSize: 16,
-                      color: AppColors.kgrey,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(17),
                 child: Column(
@@ -233,6 +205,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     const TextCustom(
                       text: 'Product Description',
                       fontSize: 17,
+                      fontWeight: FontWeight.w900,
                     ),
                     const SizedBox(height: 10),
                     TextCustom(
@@ -247,7 +220,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               const SizedBox(height: 10),
               Center(
                 child: ButtonCustomized(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.shopping_cart,
                     color: Colors.white,
                   ),

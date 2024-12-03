@@ -23,8 +23,12 @@ class AddAddress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: AppColors.primarycolor,
-        title: const TextCustom(text: "Add Address"),
+        title: const TextCustom(
+          text: "Add Address",
+          color: Colors.white,
+        ),
         centerTitle: true,
       ),
       body: SafeArea(

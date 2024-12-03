@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_appbar.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_primary_header_container.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_card.dart';
@@ -142,12 +143,29 @@ class Home extends StatelessWidget {
                   future: fetchCategories(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Skeletonizer(
-                        enabled: true,
-                        child: Container(
-                          height: 100,
-                          width: double.infinity,
-                          color: Colors.grey[300],
+                      // Skeleton for categories
+                      return SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5, // Number of skeletons to show
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Skeletonizer(
+                                enabled: true,
+                                child: Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     } else if (snapshot.hasError) {
@@ -164,22 +182,61 @@ class Home extends StatelessWidget {
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
                           var category = categories[index];
-                          String imageUrl = category['imageUrl'] ??
-                              'https://via.placeholder.com/100';
+                          String imageUrl = category['imageUrl'] ?? '';
 
-                          return CustomProductCategory(
-                            category: category,
-                            imageUrl: imageUrl,
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const TopCategory()));
-                            },
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const TopCategory(),
+                                ));
+                              },
+                              child: Column(
+                                children: [
+                                  ClipOval(
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder:
+                                          'assets/images/placeholder-images-image_large.webp', // Path to placeholder image
+                                      image: imageUrl.isNotEmpty
+                                          ? imageUrl
+                                          : 'https://via.placeholder.com/100',
+                                      width: 70,
+                                      height: 70,
+                                      fit: BoxFit.cover,
+                                      imageErrorBuilder:
+                                          (context, error, stackTrace) {
+                                        // Fallback widget for broken images
+                                        return Container(
+                                          width: 70,
+                                          height: 70,
+                                          color: Colors.grey[300],
+                                          child: const Icon(
+                                            Icons.broken_image,
+                                            size: 30,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    category['name'] ??
+                                        'Unknown', // Display category name
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
                     );
                   },
                 ),
+
                 const SizedBox(height: 10),
               ],
             ),
@@ -191,49 +248,61 @@ class Home extends StatelessWidget {
           FutureBuilder<List<Map<String, dynamic>>>(
             future: fetchBanner(),
             builder: (context, snapshot) {
-              // Handle loading state
               if (snapshot.connectionState == ConnectionState.waiting) {
+                // Show a placeholder while loading
                 return Skeletonizer(
                   enabled: true,
                   child: Container(
-                    height: 330,
-                    color: Colors.grey[300],
+                    height: 300,
+                    width: 300,
+                    color: Colors.grey[400],
                   ),
                 );
               } else if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Text("No banners found");
-              }
+              } else {
+                var banners = snapshot.data!;
 
-              var banners = snapshot.data!;
+                return CarouselSlider(
+                  items: banners.map((banner) {
+                    String imageUrl = banner['imageurl'] ?? '';
 
-              return CarouselSlider(
-                items: banners.map((banner) {
-                  String imageUrl = banner['imageurl'] ??
-                      'https://via.placeholder.com/350x330';
-                  print('Image URL: $imageUrl');
-
-                  return Container(
-                    width: MediaQuery.of(context).size.width * 1.0,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl),
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: FadeInImage.assetNetwork(
+                        placeholder:
+                            'assets/images/placeholder-images-image_large.webp', // Placeholder image
+                        image: imageUrl.isNotEmpty
+                            ? imageUrl
+                            : 'https://via.placeholder.com/300',
                         fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          // Show a fallback widget if the image fails to load
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                  height: 300,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.9,
-                  aspectRatio: 16 / 9,
-                ),
-              );
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    height: 300,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
+                    aspectRatio: 16 / 9,
+                  ),
+                );
+              }
             },
           ),
 
@@ -257,8 +326,8 @@ class Home extends StatelessWidget {
                 return Skeletonizer(
                   enabled: true,
                   child: Container(
-                    height: 100,
-                    width: double.infinity,
+                    height: 300,
+                    width: 300,
                     color: Colors.grey[300],
                   ),
                 );
@@ -315,8 +384,8 @@ class Home extends StatelessWidget {
                 return Skeletonizer(
                   enabled: true,
                   child: Container(
-                    height: 100,
-                    width: double.infinity,
+                    height: 300,
+                    width: 300,
                     color: Colors.grey[300],
                   ),
                 );

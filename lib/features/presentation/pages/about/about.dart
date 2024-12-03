@@ -1,7 +1,7 @@
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
-import 'package:e_commerce_app/features/presentation/pages/developer_information.dart';
-import 'package:e_commerce_app/features/presentation/pages/privacy_policies.dart';
-import 'package:e_commerce_app/features/presentation/pages/terms_condition.dart';
+import 'package:e_commerce_app/features/presentation/pages/about/developer_information.dart';
+import 'package:e_commerce_app/features/presentation/pages/about/privacy_policies.dart';
+import 'package:e_commerce_app/features/presentation/pages/about/terms_condition.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class About extends StatelessWidget {
             Column(
               children: [
                 const TextCustom(
-                  text: 'APP Name',
+                  text: 'StrideSmart',
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
                 ),
