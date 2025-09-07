@@ -1,0 +1,2 @@
+C:/Users/TRUE MIND COMPUTERS/Desktop/E-commerce-App-main/E-commerce-App-main/android/app/.cxx/Debug/l4lp4g33/x86/CMakeFiles/edit_cache.dir
+C:/Users/TRUE MIND COMPUTERS/Desktop/E-commerce-App-main/E-commerce-App-main/android/app/.cxx/Debug/l4lp4g33/x86/CMakeFiles/rebuild_cache.dir
