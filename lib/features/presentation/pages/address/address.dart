@@ -12,22 +12,19 @@ import 'package:e_commerce_app/features/presentation/pages/address/add_address.d
 import 'package:e_commerce_app/features/presentation/pages/checkout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart'; // Import Skeletonizer
 
 class ShippedAddress extends StatelessWidget {
   final String userId;
-  Map<String, Object>? cartData;
-  late AddressModel address;
+  final Map<String, Object>? cartData;
 
-  ShippedAddress({super.key, required this.userId, this.cartData});
+  const ShippedAddress({super.key, required this.userId, this.cartData});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     final shippingAddressService = ShippingAddressImplement();
-    cartData =
+    final effectiveCartData = cartData ??
         ModalRoute.of(context)?.settings.arguments as Map<String, Object>?;
 
     return Scaffold(
@@ -45,10 +42,10 @@ class ShippedAddress extends StatelessWidget {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => AddAddress()));
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.add,
               color: Colors.white,
-              size: 40,
+              size: 40.sp,
             ),
           )
         ],
@@ -65,9 +62,9 @@ class ShippedAddress extends StatelessWidget {
                   itemCount: 5, // Number of skeleton items to show
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10.r),
                       child: Container(
-                        height: 100,
+                        height: 100.h,
                         width: double.infinity,
                         color: Colors.grey[300], // Skeleton item color
                       ),
@@ -87,10 +84,10 @@ class ShippedAddress extends StatelessWidget {
 
           // No data state
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 "No addresses found",
-                style: TextStyle(color: Colors.black, fontSize: 24),
+                style: TextStyle(color: Colors.black, fontSize: 24.sp),
               ),
             );
           }
@@ -104,7 +101,7 @@ class ShippedAddress extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20.r),
                       child: Column(
                         children: [
                           ListView.builder(
@@ -113,21 +110,22 @@ class ShippedAddress extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               var addressDoc = addressDocs[index];
-                              address = AddressModel.fromFirestore(addressDoc);
+                              final address =
+                                  AddressModel.fromFirestore(addressDoc);
                               var documentId = addressDoc.id;
 
                               return SizedBox(
-                                height: screenHeight * 0.319,
+                                height: 260.h,
                                 width: double.infinity,
                                 child: Card(
                                   elevation: 7,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10.r),
                                     side: const BorderSide(
                                         color: AppColors.primarycolor),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10.r),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -139,9 +137,10 @@ class ShippedAddress extends StatelessWidget {
                                             Expanded(
                                               child: TextCustom(
                                                 text: address.name,
-                                                fontSize: 19,
+                                                fontSize: 19.sp,
                                                 fontWeight: FontWeight.w800,
-                                                height: 3,
+                                                height:
+                                                    1.5, // Adjusted from 3 to a reasonable scale
                                               ),
                                             ),
                                             BlocBuilder<AddressCheckboxBloc,
@@ -169,27 +168,26 @@ class ShippedAddress extends StatelessWidget {
                                         ),
                                         TextCustom(
                                           text: address.address,
-                                          fontSize: 17,
+                                          fontSize: 17.sp,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
                                         TextCustom(
                                           text:
                                               "${address.pincode},\n${address.state}",
-                                          fontSize: 17,
+                                          fontSize: 17.sp,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 10.h),
                                         TextCustom(
                                           text: "Ph: ${address.phone}",
-                                          fontSize: 17,
+                                          fontSize: 17.sp,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.grey,
                                         ),
-                                        const SizedBox(height: 20),
+                                        SizedBox(height: 20.h),
                                         addressEditButton(
-                                          screenWidth,
                                           context,
                                           address,
                                           shippingAddressService,
@@ -204,15 +202,14 @@ class ShippedAddress extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: SizedBox(
-                              height: 55,
-                              width: 300,
+                              height: 55.h,
+                              width: 300.w,
                               child: ButtonCustomized(
                                 text: "Check Out",
-                                textStyle: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 25,
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25.sp,
                                   fontWeight: FontWeight.w800,
-                                  height: 10,
                                 ),
                                 color: AppColors.primarycolor,
                                 onPressed: () {
@@ -223,10 +220,8 @@ class ShippedAddress extends StatelessWidget {
                                       .selectedDocumentId;
 
                                   if (selectedAddressId == null) {
-                                    showSnackBarMessage(
-                                        context,
-                                        "Please select a delivery address",
-                                        Colors.red);
+                                    context.showErrorSnackBar(
+                                        "Please select a delivery address");
                                   } else {
                                     // Find the selected address based on its document ID
                                     final selectedAddressDoc =
@@ -247,7 +242,7 @@ class ShippedAddress extends StatelessWidget {
                                         builder: (context) => Checkout(
                                           cartItems: cartItems,
                                           address: selectedAddress,
-                                          cartData: cartData,
+                                          cartData: effectiveCartData,
                                         ),
                                       ),
                                     );

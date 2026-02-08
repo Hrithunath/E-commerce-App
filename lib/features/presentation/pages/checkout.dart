@@ -51,183 +51,285 @@ class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       appBar: AppBar(
-        title: const Text('My Checkout'),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: const TextCustom(
+          text: 'My Checkout',
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+        backgroundColor: AppColors.bgColor,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ListView.builder(
-                itemCount: widget.cartItems.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  var item = widget.cartItems[index];
-                  // var cartItem = (cartData!['cartItems'] as List)[index];
-                  return Card(
-                    child: SizedBox(
-                      height: 70,
-                      child: ListTile(
-                        leading: Container(
-                          height: 100,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  item['image'] ?? "default image url"),
-                              fit: BoxFit.cover,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListView.builder(
+                  itemCount: widget.cartItems.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var item = widget.cartItems[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              color: AppColors.bgColor,
+                              borderRadius: BorderRadius.circular(15),
+                              image: DecorationImage(
+                                image: NetworkImage(item['image'] ??
+                                    "https://via.placeholder.com/150"),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        title: TextCustom(
-                          text: "${item['productName'] ?? 0}",
-                          fontSize: 19,
-                          color: AppColors.kgreen,
-                        ),
-                        subtitle: TextCustom(
-                          text: "₹${item['price'] ?? 0}",
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                        ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextCustom(
+                                  text: "${item['productName'] ?? 'Product'}",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(
+                                      0xFF00B167), // Greenish color from UI
+                                ),
+                                const SizedBox(height: 4),
+                                TextCustom(
+                                  text: "₹${item['price'] ?? 0}",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.all(15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Divider(),
                     const TextCustom(
                       text: "Shipping Address",
-                      fontSize: 19,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextCustom(
-                          text: widget.address.name,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                          height: 3,
-                        ),
-                      ],
-                    ),
-                    TextCustom(
-                      text: widget.address.address,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
-                    ),
-                    TextCustom(
-                      text: widget.address.state,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
-                    ),
-                    TextCustom(
-                      text: widget.address.phone,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextCustom(
+                            text: widget.address.name,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          const SizedBox(height: 8),
+                          TextCustom(
+                            text: widget.address.address,
+                            fontSize: 15,
+                            color: Colors.grey.shade600,
+                          ),
+                          TextCustom(
+                            text:
+                                "${widget.address.pincode}, ${widget.address.state}",
+                            fontSize: 15,
+                            color: Colors.grey.shade600,
+                          ),
+                          const SizedBox(height: 12),
+                          TextCustom(
+                            text: widget.address.phone,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(),
-                      const TextCustom(
-                        text: "Payment Details",
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const TextCustom(
+                      text: "Payment Details",
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
                       ),
-                      BlocBuilder<CartBloc, CartState>(
-                        builder: (context, state) {
-                          final itemCount = state is CartLoadedState
-                              ? getTotalQuantity(state)
-                              : 0;
-                          final totalSum = state is CartLoadedState
-                              ? getTotalSum(state)
-                              : 0.0;
-                          return Row(
+                      child: Column(
+                        children: [
+                          BlocBuilder<CartBloc, CartState>(
+                            builder: (context, state) {
+                              final itemCount = state is CartLoadedState
+                                  ? getTotalQuantity(state)
+                                  : 0;
+                              final totalSum = state is CartLoadedState
+                                  ? getTotalSum(state)
+                                  : 0.0;
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextCustom(
+                                    text: "Items ($itemCount)",
+                                    fontSize: 15,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                  TextCustom(
+                                    text: "₹$totalSum",
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextCustom(
-                                text: "Items ($itemCount)",
-                                fontSize: 17,
+                                text: "Shipping",
+                                fontSize: 15,
+                                color: Colors.grey.shade700,
                               ),
-                              TextCustom(
-                                text: "₹$totalSum",
-                                fontSize: 17,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextCustom(text: "Shipping"),
-                          TextCustom(text: "₹${Checkout.shippingCharges}"),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextCustom(text: "Import charges"),
-                          TextCustom(text: "₹${Checkout.importCharges}"),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      BlocBuilder<CartBloc, CartState>(
-                        builder: (context, state) {
-                          final totalSum = state is CartLoadedState
-                              ? getTotalSum(state) +
-                                  Checkout.shippingCharges +
-                                  Checkout.importCharges
-                              : 0.0;
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
                               const TextCustom(
-                                text: "Total Price",
-                                fontSize: 17,
+                                text: "₹${Checkout.shippingCharges}",
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               TextCustom(
-                                text: " ₹$totalSum",
+                                text: "Import charges",
+                                fontSize: 15,
+                                color: Colors.grey.shade700,
+                              ),
+                              const TextCustom(
+                                text: "₹${Checkout.importCharges}",
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
                               ),
                             ],
-                          );
-                        },
+                          ),
+                          const SizedBox(height: 16),
+                          const Divider(),
+                          const SizedBox(height: 16),
+                          BlocBuilder<CartBloc, CartState>(
+                            builder: (context, state) {
+                              final totalSum = state is CartLoadedState
+                                  ? getTotalSum(state) +
+                                      Checkout.shippingCharges +
+                                      Checkout.importCharges
+                                  : 0.0;
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const TextCustom(
+                                    text: "Total Price",
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  TextCustom(
+                                    text: "₹$totalSum",
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                      const SizedBox(height: 20),
-                    ],
-                  )),
+                    ),
+                    const SizedBox(height: 100), // Spacing for fab
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: ButtonCustomized(
           text: "Submit Order",
           color: AppColors.primarycolor,
-          height: 50,
-          width: 300,
-          borderRadius: 10,
+          height: 60,
+          width: double.infinity,
+          borderRadius: 15,
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
           onPressed: () {
             double totalAmount =
                 (widget.cartData?['totalAmount'] as num).toDouble();

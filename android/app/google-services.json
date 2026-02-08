@@ -52,19 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "466231871448-4oj4t1hkdt6qplkq7c4ae1i9mskg37qu.apps.googleusercontent.com",
+          "client_id": "466231871448-s8dpirin71e9gks6a4flrtujpsvg5r5f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hrithu.shop",
-            "certificate_hash": "2bf13109e0795ac616d3745e2f821ac1ecb6dee1"
-          }
-        },
-        {
-          "client_id": "466231871448-qkjd49794v2f8g70eu626n0s9uivrgit.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.hrithu.shop",
-            "certificate_hash": "6f9a03c76d9b21bc6833a9f537ae1f43a7022b8c"
+            "certificate_hash": "8526c6b8d4c130230fa59b3079f99f7f56b52597"
           }
         },
         {

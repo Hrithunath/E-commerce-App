@@ -9,9 +9,9 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   ForgotPasswordBloc() : super(ForgotPasswordInitial()) {
     on<ForgotPasswordEvent>((event, emit) {});
 
-    on<SendResetLink>((event, emit) {
+    on<SendResetLink>((event, emit) async {
       try {
-        sendPasswordResetEmail(event.email);
+        await sendPasswordResetEmail(event.email);
         emit(ForgotPasswordSend());
       } catch (e) {
         emit(ResetLinkFailed(e.toString()));

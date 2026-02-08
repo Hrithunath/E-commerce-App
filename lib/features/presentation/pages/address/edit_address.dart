@@ -5,8 +5,10 @@ import 'package:e_commerce_app/features/domain/model/address_model.dart';
 import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_scaffold_messenger.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
-import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
+import 'package:e_commerce_app/features/presentation/Widget/custom_text_field.dart';
+import 'package:e_commerce_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EditAddress extends StatefulWidget {
   final AddressModel address; // Existing address to be edited
@@ -53,111 +55,143 @@ class _EditAddressState extends State<EditAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: TextCustom(
           text: "Edit Address",
           color: Colors.white,
+          fontSize: 22.sp,
+          fontWeight: FontWeight.bold,
         ),
         centerTitle: true,
         backgroundColor: AppColors.primarycolor,
+        elevation: 0,
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.r),
           child: Form(
             key: formKey,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Textformfeildcustom(
-                    label: "Name",
-                    prefixIcon: Icons.person_sharp,
-                    controller: nameController,
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validator.validateText(value),
-                  ),
-                  const SizedBox(height: 10),
-                  Textformfeildcustom(
-                    label: "Address",
-                    prefixIcon: Icons.place,
-                    controller: addressController,
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validator.validateText(value),
-                  ),
-                  const SizedBox(height: 10),
-                  Textformfeildcustom(
-                    label: "Pin",
-                    prefixIcon: Icons.pin,
-                    controller: pinController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) => Validator.validatePinCode(value),
-                  ),
-                  const SizedBox(height: 10),
-                  Textformfeildcustom(
-                    label: "District",
-                    prefixIcon: Icons.business,
-                    keyboardType: TextInputType.name,
-                    controller: districtController, // Connect controller
-                    validator: (value) => Validator.validateText(value),
-                  ),
-                  const SizedBox(height: 10),
-                  Textformfeildcustom(
-                    label: "State",
-                    prefixIcon: Icons.business,
-                    controller: stateController,
-                    keyboardType: TextInputType.name,
-                    validator: (value) => Validator.validateText(value),
-                  ),
-                  const SizedBox(height: 10),
-                  Textformfeildcustom(
-                    label: "Phone",
-                    prefixIcon: Icons.phone,
-                    controller: phoneController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) => Validator.validatePhoneNumber(value),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 55,
-                    width: double.infinity,
-                    child: ButtonCustomized(
-                      text: "Edit Address",
-                      textStyle: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                        height: 10,
-                      ),
-                      color: AppColors.primarycolor,
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          ShippingAddressImplement shippingAddressImplement =
-                              ShippingAddressImplement();
-                          try {
-                            await shippingAddressImplement.editAddress(
-                              AddressModel(
-                                id: widget.address.id, // Use existing ID
-                                name: nameController.text,
-                                address: addressController.text,
-                                pincode: pinController.text,
-                                district: districtController.text,
-                                state: stateController.text,
-                                phone: phoneController.text,
-                              ),
-                            );
-                            showSnackBarMessage(context,
-                                "Address edited successfully", Colors.green);
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, "/ShippedAddress", (route) => false);
-                          } catch (e) {
-                            showSnackBarMessage(context,
-                                "Failed to edit address: $e", Colors.red);
-                          }
-                        }
-                      },
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "Name",
+                      prefix: Icon(Icons.person_outline,
+                          color: Colors.grey.shade600),
+                      controller: nameController,
+                      keyboardType: TextInputType.text,
+                      validator: (value) => Validator.validateText(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
                     ),
+                  ),
+                  SizedBox(height: 15.h),
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "Address",
+                      prefix: Icon(Icons.location_on_outlined,
+                          color: Colors.grey.shade600),
+                      controller: addressController,
+                      keyboardType: TextInputType.text,
+                      validator: (value) => Validator.validateText(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
+                      maxLines: 3,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "Pin",
+                      prefix: Icon(Icons.tag, color: Colors.grey.shade600),
+                      controller: pinController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) => Validator.validatePinCode(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "District",
+                      prefix: Icon(Icons.location_city_outlined,
+                          color: Colors.grey.shade600),
+                      keyboardType: TextInputType.name,
+                      controller: districtController,
+                      validator: (value) => Validator.validateText(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "State",
+                      prefix:
+                          Icon(Icons.map_outlined, color: Colors.grey.shade600),
+                      controller: stateController,
+                      keyboardType: TextInputType.name,
+                      validator: (value) => Validator.validateText(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  _buildShadowedField(
+                    child: CustomTextField(
+                      hint: "Phone",
+                      prefix: Icon(Icons.phone_outlined,
+                          color: Colors.grey.shade600),
+                      controller: phoneController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                          Validator.validatePhoneNumber(value),
+                      fillColor: Colors.white,
+                      borderColor: Colors.transparent,
+                    ),
+                  ),
+                  SizedBox(height: 25.h),
+                  ButtonCustomized(
+                    text: "Edit Address",
+                    height: 60.h,
+                    width: double.infinity,
+                    color: AppColors.primarycolor,
+                    borderRadius: 15.r,
+                    textStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        ShippingAddressImplement shippingAddressImplement =
+                            ShippingAddressImplement();
+                        try {
+                          await shippingAddressImplement.editAddress(
+                            AddressModel(
+                              id: widget.address.id, // Use existing ID
+                              name: nameController.text,
+                              address: addressController.text,
+                              pincode: pinController.text,
+                              district: districtController.text,
+                              state: stateController.text,
+                              phone: phoneController.text,
+                            ),
+                          );
+                          context.showSuccessSnackBar(AppStrings.addressEdited);
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/ShippedAddress", (route) => false);
+                        } catch (e) {
+                          context.showErrorSnackBar(
+                              "${AppStrings.addressEditFailed}$e");
+                        }
+                      }
+                    },
                   ),
                 ],
               ),
@@ -165,6 +199,23 @@ class _EditAddressState extends State<EditAddress> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildShadowedField({required Widget child}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10.r,
+            offset: Offset(0, 5.h),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }

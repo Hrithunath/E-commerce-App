@@ -13,7 +13,10 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId:
+        '466231871448-tlcqnr2omuvehfjldcnmo9gjjcuoplsg.apps.googleusercontent.com',
+  );
   User? user;
 
   AuthBloc() : super(AuthInitial()) {
@@ -141,6 +144,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GoogleSignInEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoadingState());
     try {
+      // Force account picker by signing out first
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
         // retrieves the authentication tokens (ID token and access token) for the signed-in Google user.
@@ -184,15 +189,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             print('User already exists in Firestore.');
           }
 
-          emit(AuthenticatedState(username: username, email: email));
+          emit(
+              AuthenticatedState(user: user, username: username, email: email));
         } else {
-          print('Google Sign-In failed: User object is null');
-          emit(UnAuthenticatedState());
+          print(
+              'Google Sign-In failed: User object is null after signInWithCredential');
+          emit(AuthErrorState(
+              errorMessage: 'Google Sign-In failed: User object is null'));
         }
       } else {
         emit(UnAuthenticatedState());
       }
     } catch (e) {
+      print('Google Sign-In Error: $e');
       emit(AuthErrorState(errorMessage: e.toString()));
     }
   }

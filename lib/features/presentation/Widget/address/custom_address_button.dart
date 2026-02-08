@@ -1,7 +1,7 @@
 import 'package:e_commerce_app/features/data/repository/address_service.dart';
 import 'package:e_commerce_app/features/domain/model/address_model.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_scaffold_messenger.dart';
-import 'package:e_commerce_app/features/presentation/pages/address/address.dart';
+import 'package:e_commerce_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 
 Future<void> addAddress(
@@ -33,16 +33,13 @@ Future<void> addAddress(
       nameController.clear();
       addressController.clear();
       pinController.clear();
+      districtController.clear();
       stateController.clear();
       phoneController.clear();
-      showSnackBarMessage(context, "Address added successfully", Colors.green);
-      Navigator.of(context).pop(MaterialPageRoute(
-          builder: (context) => ShippedAddress(
-                userId: userId!,
-                // isfromProfile: false,
-              )));
+      context.showSuccessSnackBar(AppStrings.addressAdded);
+      Navigator.of(context).pop();
     } catch (e) {
-      showSnackBarMessage(context, "Failed to add address: $e", Colors.red);
+      context.showErrorSnackBar("${AppStrings.addressAddFailed}$e");
     }
   }
 }

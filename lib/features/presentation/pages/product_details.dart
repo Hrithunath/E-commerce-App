@@ -10,8 +10,10 @@ import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_bl
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_event.dart';
 import 'package:e_commerce_app/features/presentation/bloc/favourite/favourite_state.dart';
 import 'package:e_commerce_app/features/presentation/bloc/image_prev/image_prev_bloc.dart';
+import 'package:e_commerce_app/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductDetails extends StatefulWidget {
   final productDetails;
@@ -26,83 +28,65 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    final imageHeight = screenHeight * 0.35;
-    final thumbSize = screenWidth * 0.3;
-    final sizeCircleRadius = screenWidth * 0.08;
-    final buttonWidth = screenWidth * 0.85;
-    final buttonHeight = screenHeight * 0.065;
-    final padding = screenWidth * 0.045;
-    final fontSizeTitle = screenWidth * 0.05;
-    final fontSizeText = screenWidth * 0.042;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  BlocBuilder<ImagePrevBloc, ImagePrevState>(
-                    builder: (context, state) {
-                      int selectedIndex = 0;
-                      if (state is ImagePrevSelected) selectedIndex = state.selectedIndex;
-
-                      String imageUrl = widget.productDetails["uploadImages"][selectedIndex].toString().trim();
-
-                      return Container(
-                        width: double.infinity,
-                        height: imageHeight,
+              // Custom Header
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: EdgeInsets.all(10.r),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey[200],
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10.r,
+                              offset: Offset(0, 5.h),
+                            ),
+                          ],
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.transparent,
-                                child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    top: padding * 0.5,
-                    right: padding * 0.5,
-                    child: BlocConsumer<FavouriteBloc, FavouriteState>(
+                        child:
+                            const Icon(Icons.arrow_back, color: Colors.black),
+                      ),
+                    ),
+                    BlocConsumer<FavouriteBloc, FavouriteState>(
                       listener: (context, state) {},
                       builder: (context, state) {
                         bool isFavourite = false;
                         if (state is FavouriteSuccess) {
-                          isFavourite = state.favourites.any(
-                              (favourite) => favourite.productId == widget.productDetails["id"]);
+                          isFavourite = state.favourites.any((favourite) =>
+                              favourite.productId ==
+                              widget.productDetails["id"]);
                         }
 
-                        return IconButton(
-                          icon: Icon(
-                            isFavourite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavourite ? AppColors.kred : Colors.grey,
-                            size: screenWidth * 0.08,
-                          ),
-                          onPressed: () {
+                        return GestureDetector(
+                          onTap: () {
                             String productId = widget.productDetails["id"];
-                            String imageUrl = widget.productDetails["uploadImages"][0].toString().trim();
+                            String imageUrl = widget
+                                .productDetails["uploadImages"][0]
+                                .toString()
+                                .trim();
                             String name = widget.productDetails["productName"];
-                            double price = widget.productDetails["price"]?.toDouble() ?? 0.0;
+                            double price =
+                                widget.productDetails["price"]?.toDouble() ??
+                                    0.0;
                             String favouriteId = "fav_$productId";
 
                             if (isFavourite) {
-                              context.read<FavouriteBloc>().add(RemoveFavouriteEvent(favouriteId));
+                              context
+                                  .read<FavouriteBloc>()
+                                  .add(RemoveFavouriteEvent(favouriteId));
                             } else {
                               FavouriteModel newFavourite = FavouriteModel(
                                 productId: productId,
@@ -111,182 +95,305 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 name: name,
                                 price: price,
                               );
-                              context.read<FavouriteBloc>().add(AddFavouriteEvent(newFavourite));
+                              context
+                                  .read<FavouriteBloc>()
+                                  .add(AddFavouriteEvent(newFavourite));
                             }
                           },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: padding * 0.5),
-              Padding(
-                padding: EdgeInsets.all(padding),
-                child: TextCustom(
-                  text:
-                      "${widget.productDetails["productName"]}\n₹${widget.productDetails["price"].toString()}",
-                  fontSize: fontSizeTitle,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: thumbSize,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.productDetails["uploadImages"].length,
-                  itemBuilder: (context, index) {
-                    String thumbUrl = widget.productDetails["uploadImages"][index].toString().trim();
-                    return Padding(
-                      padding: EdgeInsets.all(padding * 0.5),
-                      child: GestureDetector(
-                        onTap: () {
-                          context.read<ImagePrevBloc>().add(ImagePrev(index));
-                        },
-                        child: Container(
-                          height: thumbSize,
-                          width: thumbSize,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey[200],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              thumbUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: Icon(Icons.broken_image, size: 30, color: Colors.grey),
-                                );
-                              },
+                          child: Container(
+                            padding: EdgeInsets.all(10.r),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10.r,
+                                  offset: Offset(0, 5.h),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              isFavourite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isFavourite ? AppColors.kred : Colors.grey,
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: padding * 0.5),
-              Padding(
-                padding: EdgeInsets.only(left: padding),
-                child: TextCustom(
-                  text: "Select Size",
-                  fontSize: fontSizeText,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              SizedBox(
-                height: sizeCircleRadius * 2,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.productDetails["sizes"].length,
-                  itemBuilder: (context, index) {
-                    final size = widget.productDetails["sizes"][index];
-                    return Padding(
-                      padding: EdgeInsets.all(padding * 0.3),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedsize = size;
-                          });
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: selectedsize == size
-                              ? AppColors.primarycolor
-                              : Colors.grey[200],
-                          radius: sizeCircleRadius,
-                          child: TextCustom(
-                            text: size,
-                            fontSize: fontSizeText * 0.9,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: padding * 0.4),
-              Padding(
-                padding: EdgeInsets.all(padding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextCustom(
-                      text: 'Product Description',
-                      fontSize: fontSizeText,
-                      fontWeight: FontWeight.w900,
-                    ),
-                    SizedBox(height: padding * 0.25),
-                    TextCustom(
-                      text: "${widget.productDetails["productDescription"]}",
-                      color: AppColors.kgrey,
-                      height: 1.5,
-                      fontSize: fontSizeText * 0.95,
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: padding * 0.4),
-              Center(
-                child: ButtonCustomized(
-                  icon: const Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                  ),
-                  text: "Add To Cart",
-                  color: AppColors.primarycolor,
-                  height: buttonHeight,
-                  width: buttonWidth,
-                  borderRadius: 10,
-                  onPressed: () async {
-                    if (selectedsize == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please select a size.")),
-                      );
-                      return;
+
+              // Main Image Section
+              BlocBuilder<ImagePrevBloc, ImagePrevState>(
+                builder: (context, state) {
+                  int selectedIndex = 0;
+                  if (state is ImagePrevSelected) {
+                    selectedIndex = state.selectedIndex;
+                  }
+
+                  String imageUrl = widget.productDetails["uploadImages"]
+                          [selectedIndex]
+                      .toString()
+                      .trim();
+
+                  return Center(
+                    child: Container(
+                      height: 250.h,
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                      ),
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.broken_image,
+                              size: 50.sp, color: Colors.grey);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              SizedBox(height: 10.h),
+
+              // Thumbnail Gallery
+              SizedBox(
+                height: 80.h,
+                child: BlocBuilder<ImagePrevBloc, ImagePrevState>(
+                  builder: (context, state) {
+                    int selectedIndex = 0;
+                    if (state is ImagePrevSelected) {
+                      selectedIndex = state.selectedIndex;
                     }
 
-                    final cartBloc = context.read<CartBloc>();
-                    final CartRepositoryImplementation cartRepo = CartRepositoryImplementation();
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      itemCount: widget.productDetails["uploadImages"].length,
+                      itemBuilder: (context, index) {
+                        String thumbUrl = widget.productDetails["uploadImages"]
+                                [index]
+                            .toString()
+                            .trim();
+                        bool isSelected = selectedIndex == index;
 
-                    bool isInCart = await cartRepo.isProductInCart(widget.productDetails["id"]);
-
-                    if (isInCart) {
-                      showSnackBarMessage(context, "This product is already in the cart.", Colors.red);
-                      return;
-                    }
-
-                    final cartItem = CartModel(
-                      productid: widget.productDetails["id"],
-                      cartid: "generated_cart_id",
-                      count: 1,
-                      imageUrl: widget.productDetails["uploadImages"][0].toString().trim(),
-                      name: widget.productDetails["productName"],
-                      size: selectedsize!,
-                      stock: widget.productDetails["stock"] as int,
-                      price: double.tryParse(widget.productDetails["price"].toString()) ?? 0.0,
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<ImagePrevBloc>().add(ImagePrev(index));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 15.w),
+                            width: 80.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.bgColor,
+                              borderRadius: BorderRadius.circular(15.r),
+                              border: Border.all(
+                                color: isSelected
+                                    ? AppColors.primarycolor
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                            // Remove padding for full fit
+                            padding: EdgeInsets.zero,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15.r),
+                              child: Image.network(
+                                thumbUrl,
+                                fit: BoxFit.cover,
+                                width: 80.w,
+                                height: 80.h,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     );
-
-                    cartBloc.add(AddToCartEvent(
-                      productId: cartItem.productid,
-                      productName: cartItem.name,
-                      productPrice: cartItem.price.toString(),
-                      productQuantity: cartItem.count.toString(),
-                      image: cartItem.imageUrl,
-                      size: cartItem.size,
-                      stock: cartItem.stock.toString(),
-                    ));
-
-                    showSnackBarMessage(
-                        context, "${widget.productDetails["productName"]} added to cart.", Colors.green);
                   },
                 ),
               ),
-              SizedBox(height: padding),
+
+              SizedBox(height: 25.h),
+
+              // Details Section in White Container
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(25.r),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40.r),
+                    topRight: Radius.circular(40.r),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 20.r,
+                      offset: Offset(0, -5.h),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextCustom(
+                      text: widget.productDetails["productName"],
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 8.h),
+                    TextCustom(
+                      text: "₹${widget.productDetails["price"]}",
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+
+                    SizedBox(height: 30.h),
+
+                    TextCustom(
+                      text: "Select Size",
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 15.h),
+
+                    // Size Selector
+                    SizedBox(
+                      height: 60.h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.productDetails["sizes"].length,
+                        itemBuilder: (context, index) {
+                          final size = widget.productDetails["sizes"][index];
+                          bool isSelected = selectedsize == size;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedsize = size;
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(right: 15.w),
+                              width: 60.w,
+                              height: 60.h,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.primarycolor
+                                    : const Color(0xFFF7F7F7),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10.r,
+                                    offset: Offset(0, 5.h),
+                                  ),
+                                ],
+                              ),
+                              alignment: Alignment.center,
+                              child: TextCustom(
+                                text: size,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: 30.h),
+
+                    TextCustom(
+                      text: 'Product Description',
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 12.h),
+                    TextCustom(
+                      text: "${widget.productDetails["productDescription"]}",
+                      color: Colors.grey.shade600,
+                      height: 1.6,
+                      fontSize: 15.sp,
+                    ),
+
+                    SizedBox(height: 40.h),
+
+                    // Add To Cart Button
+                    ButtonCustomized(
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                      text: "Add To Cart",
+                      color: AppColors.primarycolor,
+                      height: 65.h,
+                      width: double.infinity,
+                      borderRadius: 20.r,
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      onPressed: () async {
+                        if (selectedsize == null) {
+                          context.showWarningSnackBar(AppStrings.selectSize);
+                          return;
+                        }
+
+                        final cartBloc = context.read<CartBloc>();
+                        final CartRepositoryImplementation cartRepo =
+                            CartRepositoryImplementation();
+
+                        bool isInCart = await cartRepo
+                            .isProductInCart(widget.productDetails["id"]);
+
+                        if (isInCart) {
+                          context.showErrorSnackBar(AppStrings.productInCart);
+                          return;
+                        }
+
+                        final cartItem = CartModel(
+                          productid: widget.productDetails["id"],
+                          cartid: "generated_cart_id",
+                          count: 1,
+                          imageUrl: widget.productDetails["uploadImages"][0]
+                              .toString()
+                              .trim(),
+                          name: widget.productDetails["productName"],
+                          size: selectedsize!,
+                          stock: widget.productDetails["stock"] as int,
+                          price: double.tryParse(
+                                  widget.productDetails["price"].toString()) ??
+                              0.0,
+                        );
+
+                        cartBloc.add(AddToCartEvent(
+                          productId: cartItem.productid,
+                          productName: cartItem.name,
+                          productPrice: cartItem.price.toString(),
+                          productQuantity: cartItem.count.toString(),
+                          image: cartItem.imageUrl,
+                          size: cartItem.size,
+                          stock: cartItem.stock.toString(),
+                        ));
+
+                        context.showSuccessSnackBar(
+                            "${widget.productDetails["productName"]}${AppStrings.addedToCartSuffix}");
+                      },
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

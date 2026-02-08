@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ButtonCustomized extends StatelessWidget {
   final String text;
@@ -22,23 +23,41 @@ class ButtonCustomized extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final label = Text(
+      text,
+      style: textStyle ??
+          TextStyle(
+            color: Colors.white,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
+          ),
+    );
+
     return SizedBox(
       width: width,
       height: height,
-      child: ElevatedButton.icon(
-          icon: icon,
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
+      child: icon == null
+          ? ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRadius.r),
+                ),
+              ),
+              child: label,
+            )
+          : ElevatedButton.icon(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRadius.r),
+                ),
+              ),
+              icon: icon!,
+              label: label,
             ),
-          ),
-          label: Text(
-            text,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
-          )),
     );
   }
 }

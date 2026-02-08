@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,17 @@ class NewArrivals extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> fetchNewArrivals() async {
     var products = await fetchProducts();
-    return products.where((product) => product['isNewArrival'] == true).toList();
+    return products
+        .where((product) => product['isNewArrival'] == true)
+        .toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchProducts() async {
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('products').get();
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   @override
@@ -26,6 +31,7 @@ class NewArrivals extends StatelessWidget {
     final childAspectRatio = screenWidth > 600 ? 1.1 : 0.9;
 
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       appBar: AppBar(
         title: const Text('New Arrivals'),
         backgroundColor: Colors.blueAccent,
@@ -78,14 +84,16 @@ class NewArrivals extends StatelessWidget {
             itemCount: newArrivals.length,
             itemBuilder: (context, index) {
               final product = newArrivals[index];
-              final List<dynamic> imageList = product['uploadImages'] ?? ['https://via.placeholder.com/150'];
+              final List<dynamic> imageList = product['uploadImages'] ??
+                  ['https://via.placeholder.com/150'];
 
               return InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProductDetails(productDetails: product),
+                      builder: (context) =>
+                          ProductDetails(productDetails: product),
                     ),
                   );
                 },

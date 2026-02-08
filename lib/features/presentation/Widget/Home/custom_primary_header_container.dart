@@ -15,8 +15,8 @@ class PrimaryHeaderContainer extends StatelessWidget {
     return CustomCurvedWidget(
       child: Container(
         color: const Color(0xFF4868ff),
-        child: SizedBox(
-          height: 400,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 400),
           child: Stack(
             children: [
               Positioned(

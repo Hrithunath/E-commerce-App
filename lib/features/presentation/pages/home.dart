@@ -1,13 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/core/Theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_appbar.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_primary_header_container.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_card.dart';
-import 'package:e_commerce_app/features/presentation/Widget/Home/custom_product_category.dart';
 import 'package:e_commerce_app/features/presentation/Widget/Home/custom_text_row.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
-import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
+import 'package:e_commerce_app/features/presentation/Widget/custom_text_field.dart';
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
 import 'package:e_commerce_app/features/presentation/bloc/search/search_bloc.dart';
 import 'package:e_commerce_app/features/presentation/pages/category.dart';
@@ -24,10 +24,7 @@ class HomeWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(),
-      child: const Home(),
-    );
+    return const Home();
   }
 }
 
@@ -76,65 +73,99 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(CheckLoginStatusEvent());
     return Scaffold(
-      body:  SingleChildScrollView(
+      backgroundColor: AppColors.bgColor,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             PrimaryHeaderContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomAppbar(
-                    title: TextCustom(
-                        text: "Good day for shopping",
-                        fontSize: 14,
+                  const SizedBox(height: 15),
+                  CustomAppbar(
+                    title: const UsernameWidget(),
+                    subtitle: TextCustom(
+                        text: "Welcome to Stride Smart",
+                        fontSize: 14.sp,
                         color: Colors.white),
-                    subtitle: UsernameWidget(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.r),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: Textformfeildcustom(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SearchingProducts()));
-                            },
-                            fillColor: Colors.white,
-                            hintText: "Search Product",
-                            prefixIcon: Icons.search,
-                            onChanged: (query) {
-                              if (query.isEmpty) {
-                                // Emit an empty search query to revert to the default product list
-                                context
-                                    .read<ProductSearchBloc>()
-                                    .add(SearchByProductEvent(query: query));
-                              } else {
-                                // Trigger search when query is not empty
-                                context
-                                    .read<ProductSearchBloc>()
-                                    .add(SearchByProductEvent(query: query));
-                              }
-                            },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 8.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextField(
+                                    hint: 'Search by name',
+                                    fillColor: Colors.white,
+                                    borderColor: Colors.transparent,
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SearchingProducts()));
+                                    },
+                                    textStyle: TextStyle(
+                                      fontSize: 14.sp,
+                                    ),
+                                    autovalidateMode: AutovalidateMode.disabled,
+                                    suffix: Padding(
+                                      padding: EdgeInsets.all(8.w),
+                                      child: Container(
+                                        padding: EdgeInsets.all(8.w),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primarycolor,
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                        child: Icon(
+                                          Icons.search,
+                                          color: AppColors.white,
+                                          size: 20.w,
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (query) {
+                                      if (query.isEmpty) {
+                                        // Emit an empty search query to revert to the default product list
+                                        context.read<ProductSearchBloc>().add(
+                                            SearchByProductEvent(query: query));
+                                      } else {
+                                        // Trigger search when query is not empty
+                                        context.read<ProductSearchBloc>().add(
+                                            SearchByProductEvent(query: query));
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 25),
-      
+
                   // Top Categories Section
-                  const Padding(
-                    padding: EdgeInsets.all(16),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.w, bottom: 8.h),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: TextCustom(
                         text: "Top Categories",
-                        fontSize: 17,
+                        fontSize: 17.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -146,7 +177,7 @@ class Home extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         // Skeleton for categories
                         return SizedBox(
-                          height: 100,
+                          height: 100.h,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: 5, // Number of skeletons to show
@@ -157,8 +188,8 @@ class Home extends StatelessWidget {
                                 child: Skeletonizer(
                                   enabled: true,
                                   child: Container(
-                                    width: 70,
-                                    height: 70,
+                                    width: 70.w,
+                                    height: 70.h,
                                     decoration: BoxDecoration(
                                       color: Colors.grey[300],
                                       shape: BoxShape.circle,
@@ -174,62 +205,61 @@ class Home extends StatelessWidget {
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Text("No categories found");
                       }
-      
+
                       var categories = snapshot.data!;
                       return SizedBox(
-                        height: 100,
+                        height: 100.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: categories.length,
                           itemBuilder: (context, index) {
                             var category = categories[index];
                             String imageUrl = category['imageUrl'] ?? '';
-      
+
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: EdgeInsets.symmetric(horizontal: 8.w),
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>  CategoryProducts(
-                          categoryId: category["id"],
-                          categoryName: category["categoryName"],
-                        ),
+                                    builder: (context) => CategoryProducts(
+                                      categoryId: category["id"],
+                                      categoryName: category["categoryName"],
+                                    ),
                                   ));
                                 },
                                 child: Column(
                                   children: [
                                     ClipOval(
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder:
-                                            'assets/images/placeholder-images-image_large.webp', // Path to placeholder image
-                                        image: imageUrl.isNotEmpty
+                                      child: Image.network(
+                                        imageUrl.isNotEmpty
                                             ? imageUrl
                                             : 'https://via.placeholder.com/100',
-                                        width: 70,
-                                        height: 70,
+                                        width: 70.w,
+                                        height: 70.h,
                                         fit: BoxFit.cover,
-                                        imageErrorBuilder:
+                                        errorBuilder:
                                             (context, error, stackTrace) {
-                                          // Fallback widget for broken images
                                           return Container(
-                                            width: 70,
-                                            height: 70,
+                                            width: 70.w,
+                                            height: 70.h,
                                             color: Colors.grey[300],
-                                            child: const Icon(
+                                            child: Icon(
                                               Icons.broken_image,
-                                              size: 30,
+                                              size: 30.sp,
                                               color: Colors.grey,
                                             ),
                                           );
                                         },
                                       ),
                                     ),
-                                    const SizedBox(height: 5),
+                                    SizedBox(height: 5.h),
                                     Text(
                                       category['categoryName'] ??
                                           'Unknown', // Display category name
-                                      style: const TextStyle(fontSize: 12,color: Colors.white,),
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -240,14 +270,10 @@ class Home extends StatelessWidget {
                       );
                     },
                   ),
-      
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+
             // First Carousel (Promotional Banners)
             FutureBuilder<List<Map<String, dynamic>>>(
               future: fetchBanner(),
@@ -257,8 +283,8 @@ class Home extends StatelessWidget {
                   return Skeletonizer(
                     enabled: true,
                     child: Container(
-                      height: 300,
-                      width: 300,
+                      height: 180.h,
+                      width: 300.w,
                       color: Colors.grey[400],
                     ),
                   );
@@ -268,23 +294,20 @@ class Home extends StatelessWidget {
                   return const Text("No banners found");
                 } else {
                   var banners = snapshot.data!;
-      
+
                   return CarouselSlider(
                     items: banners.map((banner) {
                       String imageUrl = banner['imageurl'] ?? '';
-      
+
                       return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: FadeInImage.assetNetwork(
-                          placeholder:
-                              'assets/images/placeholder-images-image_large.webp', // Placeholder image
-                          image: imageUrl.isNotEmpty
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: Image.network(
+                          imageUrl.isNotEmpty
                               ? imageUrl
                               : 'https://via.placeholder.com/300',
                           fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
-                          imageErrorBuilder: (context, error, stackTrace) {
-                            // Show a fallback widget if the image fails to load
+                          errorBuilder: (context, error, stackTrace) {
                             return Container(
                               color: Colors.grey[300],
                               child: const Icon(
@@ -298,7 +321,7 @@ class Home extends StatelessWidget {
                       );
                     }).toList(),
                     options: CarouselOptions(
-                      height: 300,
+                      height: 180.h,
                       autoPlay: true,
                       autoPlayInterval: const Duration(seconds: 3),
                       enlargeCenterPage: true,
@@ -309,11 +332,10 @@ class Home extends StatelessWidget {
                 }
               },
             ),
-      
-            const SizedBox(height: 20),
+
             // Second Carousel Top collection
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.r),
               child: CustomTextRow(
                 leading: "Popular Collections",
                 trailing: "See More",
@@ -340,12 +362,12 @@ class Home extends StatelessWidget {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Text("No Top Collections found");
                 }
-      
+
                 var topCollections = snapshot.data!;
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    height: 350,
+                    height: 300.h,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: topCollections.length,
@@ -398,12 +420,12 @@ class Home extends StatelessWidget {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Text("No New Arrivals found");
                 }
-      
+
                 var newArrivals = snapshot.data!;
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    height: 350,
+                    height: 300,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: newArrivals.length,
@@ -427,6 +449,7 @@ class Home extends StatelessWidget {
                 );
               },
             ),
+            SizedBox(height: 100.h), // Space for floating navbar
           ],
         ),
       ),
@@ -444,12 +467,14 @@ class UsernameWidget extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthLoadingState) {
-          return Skeletonizer(
-            enabled: true,
-            child: Container(
-              height: 100,
-              width: double.infinity,
-              color: Colors.grey[300],
+          return const Center(
+            child: SizedBox(
+              height: 28,
+              width: 28,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2.5,
+              ),
             ),
           );
         }
@@ -459,8 +484,8 @@ class UsernameWidget extends StatelessWidget {
           final String username = state.username ?? 'Unknown User';
 
           return Text(
-            username,
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            'Hello, $username',
+            style: TextStyle(color: Colors.white, fontSize: 20.sp),
           );
         }
 
@@ -468,7 +493,8 @@ class UsernameWidget extends StatelessWidget {
           return Text('Error: ${state.errorMessage}');
         }
 
-        return const Text('User not logged in');
+        // While waiting for state, show nothing (prevents 'User not logged in' flash)
+        return const SizedBox.shrink();
       },
     );
   }

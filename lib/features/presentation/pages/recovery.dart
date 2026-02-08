@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:e_commerce_app/core/Theme/app_colors.dart';
+import 'package:e_commerce_app/features/presentation/Widget/custom_scaffold_messenger.dart';
 import 'package:e_commerce_app/core/constant/constant.dart';
 import 'package:e_commerce_app/core/utils/validator.dart';
 import 'package:e_commerce_app/features/presentation/Widget/button.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
-import 'package:e_commerce_app/features/presentation/Widget/custom_text_Form_Feild.dart';
+import 'package:e_commerce_app/features/presentation/Widget/custom_text_field.dart';
 import 'package:e_commerce_app/features/presentation/bloc/ForgotPassword/forgot_password_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,92 +20,113 @@ class Recovery extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final horizontalPadding = screenWidth * 0.07; 
-    final verticalSpacingSmall = screenHeight * 0.02;
-    final verticalSpacingMedium = screenHeight * 0.03;
-    final verticalSpacingLarge = screenHeight * 0.05;
-    final buttonWidth = screenWidth * 0.8; 
-    final buttonHeight = screenHeight * 0.065; 
-
     return BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
       listener: (context, state) {
         if (state is ForgotPasswordSend) {
+          context.showSuccessSnackBar(passwordResetTitle);
           Navigator.pushReplacementNamed(context, "/Login");
         } else if (state is ResetLinkFailed) {
-          print("resend Link failed");
+          context.showErrorSnackBar(state.error);
         }
       },
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: AppColors.bgColor,
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
             child: Form(
               key: formkey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextCustom(
-                    text: fogotPasswordTitle,
-                    fontSize: screenWidth * 0.055, 
-                    fontWeight: FontWeight.w600,
-                  ),
-                  SizedBox(height: verticalSpacingLarge),
-                  TextCustom(
-                    text: forgotPasswordSubTitle,
-                    fontSize: screenWidth * 0.045, 
-                  ),
-                  SizedBox(height: verticalSpacingLarge),
-                  Textformfeildcustom(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
-                    label: "Your Email",
-                    prefixIcon: Icons.email,
-                    validator: (value) => Validator.validateEmail(value),
-                  ),
-                  SizedBox(height: verticalSpacingMedium),
-                  ButtonCustomized(
-                    text: "Continue",
-                    color: AppColors.primarycolor,
-                    width: buttonWidth,
-                    height: buttonHeight,
-                    borderRadius: 10,
-                    onPressed: () {
-                      context
-                          .read<ForgotPasswordBloc>()
-                          .add(SendResetLink(emailController.text.trim()));
-                    },
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: screenHeight * 0.1),
+                    // 1. App Icon
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.primarycolor,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primarycolor.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.04),
+
+                    // 2. Title & Subtitle
+                    TextCustom(
+                      text: fogotPasswordTitle,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    TextCustom(
+                      text: forgotPasswordSubTitle,
+                      fontSize: 16,
+                      color: Colors.grey.shade500,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: screenHeight * 0.05),
+
+                    // 3. Email Field
+                    CustomTextField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
+                      hint: "Enter your Email",
+                      prefix: Icon(Icons.email_outlined,
+                          color: Colors.grey.shade400),
+                      validator: (value) => Validator.validateEmail(value),
+                      fillColor: const Color(0xFFF8F9FA),
+                      borderColor: Colors.transparent,
+                    ),
+                    SizedBox(height: screenHeight * 0.04),
+
+                    // 4. Reset Button
+                    ButtonCustomized(
+                      text: "Continue",
+                      color: AppColors.primarycolor,
+                      width: double.infinity,
+                      height: 55,
+                      borderRadius: 30,
+                      onPressed: () {
+                        if (formkey.currentState!.validate()) {
+                          context
+                              .read<ForgotPasswordBloc>()
+                              .add(SendResetLink(emailController.text.trim()));
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+
+                    // 5. Back to Login
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const TextCustom(
+                        text: "Back to Login",
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primarycolor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
     );
-  }
-
-  Future<void> resetPassword(BuildContext context) async {
-    if (!formkey.currentState!.validate()) {
-      return;
-    }
-    final email = emailController.text.trim();
-    if (email.isNotEmpty) {
-      try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(passwordResetTitle),
-          ),
-        );
-        await Future.delayed(const Duration(seconds: 2));
-        Navigator.pushReplacementNamed(context, "/Login");
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('$passwordFailedToSend ${e.toString()}'),
-              backgroundColor: AppColors.kred),
-        );
-      }
-    }
   }
 }

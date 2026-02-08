@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
 class Cart extends StatelessWidget {
   const Cart({super.key});
 
@@ -19,8 +20,10 @@ class Cart extends StatelessWidget {
     context.read<CartBloc>().add(FetchCartEvent());
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColors.bgColor,
         appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          backgroundColor: AppColors.bgColor,
+          elevation: 0,
           title: const TextCustom(
             text: "My Cart",
             fontSize: 23,
@@ -89,103 +92,210 @@ class Cart extends StatelessWidget {
                             itemCount: cartItems.length,
                             itemBuilder: (context, index) {
                               final cartItem = cartItems[index];
-                              return Card(
-                                child: SizedBox(
-                                  height: 100,
-                                  child: ListTile(
-                                    leading: Container(
-                                      height: 100,
-                                      width: 50,
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Product Image
+                                    Container(
+                                      height: 80,
+                                      width: 80,
                                       decoration: BoxDecoration(
+                                        color: AppColors.bgColor,
+                                        borderRadius: BorderRadius.circular(15),
                                         image: DecorationImage(
-                                          image: NetworkImage(
-                                              cartItem['image'] ??
-                                                  "default image url"),
+                                          image: NetworkImage(cartItem[
+                                                  'image'] ??
+                                              "https://via.placeholder.com/150"),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                    title: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 200,
-                                          child: TextCustom(
-                                            text: cartItem['productName'] ??
-                                                'Product Name Not Available',
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                    const SizedBox(width: 16),
+                                    // Product Details
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: TextCustom(
+                                                  text:
+                                                      cartItem['productName'] ??
+                                                          'Unknown',
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  final result =
+                                                      await DialogHelper
+                                                          .showAlertDialog(
+                                                    context: context,
+                                                    title: "Remove cart",
+                                                    content: const Text(
+                                                        "Are you sure you want to remove this item from cart?"),
+                                                    onConfirm: () {
+                                                      // Just close the dialog, deletion happens after
+                                                    },
+                                                    confirmText: "Remove",
+                                                    confirmColor:
+                                                        AppColors.errorRed,
+                                                  );
+
+                                                  // Delete the item after dialog is closed
+                                                  if (result == true &&
+                                                      context.mounted) {
+                                                    context.read<CartBloc>().add(
+                                                        DeleteCartItemEvent(
+                                                            cartId: cartItem[
+                                                                'cartId']));
+                                                  }
+                                                },
+                                                child: const Icon(
+                                                  Icons.delete_outline,
+                                                  color: Colors.grey,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        const SizedBox(width: 17),
-                                        IconButton(
-                                          onPressed: () {
-                                            showAlertDialog(
-                                              context,
-                                              "Remove cart",
-                                              "Are you sure you want to remove this item from cart?",
-                                              () {
-                                                context
-                                                    .read<CartBloc>()
-                                                    .add(DeleteCartItemEvent(
-                                                        cartId: cartItem[
-                                                            'cartId']));
-                                              },
-                                            );
-                                          },
-                                          icon: const Icon(Icons.delete),
-                                        ),
-                                      ],
+                                          const SizedBox(height: 4),
+                                          const TextCustom(
+                                            text:
+                                                "GORE-TEX", // Placeholder subtitle
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextCustom(
+                                                text:
+                                                    "₹${cartItem['price']?.toString() ?? '0'}",
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .grey.shade300),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: IconButton(
+                                                      padding: EdgeInsets.zero,
+                                                      onPressed: () {
+                                                        context.read<CartBloc>().add(
+                                                            DecrementQuantityEvent(
+                                                                productId: cartItem[
+                                                                    'productId']));
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.remove,
+                                                          size: 16,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 12.0),
+                                                    child: TextCustom(
+                                                      text: cartItem['count']
+                                                              ?.toString() ??
+                                                          '1',
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 30,
+                                                    width: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors
+                                                          .primarycolor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: IconButton(
+                                                      padding: EdgeInsets.zero,
+                                                      onPressed: () {
+                                                        context.read<CartBloc>().add(
+                                                            IncrementQuantityEvent(
+                                                                productId: cartItem[
+                                                                    'productId']));
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.add,
+                                                          size: 16,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    subtitle: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextCustom(
-                                          text:
-                                              "₹${cartItem['price']?.toString() ?? 'Price Not Available'}",
-                                          fontSize: 19,
-                                          color: AppColors.kgreen,
-                                        ),
-                                        Row(
-                                          children: [
-                                            IconButton(
-                                              onPressed: () {
-                                                context
-                                                    .read<CartBloc>()
-                                                    .add(DecrementQuantityEvent(
-                                                        productId: cartItem[
-                                                            'productId']));
-                                              },
-                                              icon: const Icon(Icons.remove),
-                                            ),
-                                            TextCustom(
-                                                text: cartItem['count']
-                                                        ?.toString() ??
-                                                    '1'),
-                                            IconButton(
-                                              onPressed: () {
-                                                context
-                                                    .read<CartBloc>()
-                                                    .add(IncrementQuantityEvent(
-                                                        productId: cartItem[
-                                                            'productId']));
-                                              },
-                                              icon: const Icon(Icons.add),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  ],
                                 ),
                               );
                             },
                           ),
                         ),
                         Container(
+                          margin: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            top: 16,
+                            bottom: 100, // Space for floating navbar
+                          ),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
                           child: Column(
                             children: [
-                              const Divider(),
                               BlocBuilder<CartBloc, CartState>(
                                 builder: (context, state) {
                                   final itemCount = state is CartLoadedState
@@ -194,48 +304,90 @@ class Cart extends StatelessWidget {
                                   final totalSum = state is CartLoadedState
                                       ? getTotalSum(state)
                                       : 0.0;
-                                  return ListTile(
-                                    title: TextCustom(text: "Items ($itemCount)"),
-                                    trailing: TextCustom(text: "₹$totalSum"),
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextCustom(
+                                          text: "Items ($itemCount)",
+                                          fontSize: 14,
+                                          color: Colors.grey.shade700),
+                                      TextCustom(
+                                          text: "₹$totalSum",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ],
                                   );
                                 },
                               ),
-                              const ListTile(
-                                title: TextCustom(text: "Shipping"),
-                                trailing: TextCustom(text: "₹$shippingCharges"),
+                              const SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextCustom(
+                                      text: "Shipping",
+                                      fontSize: 14,
+                                      color: Colors.grey.shade700),
+                                  const TextCustom(
+                                      text: "₹$shippingCharges",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ],
                               ),
-                              const ListTile(
-                                title: TextCustom(text: "Import charges"),
-                                trailing:
-                                    TextCustom(text: "₹$importCharges"),
+                              const SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextCustom(
+                                      text: "Import charges",
+                                      fontSize: 14,
+                                      color: Colors.grey.shade700),
+                                  const TextCustom(
+                                      text: "₹$importCharges",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ],
                               ),
+                              const SizedBox(height: 16),
+                              const Divider(),
+                              const SizedBox(height: 16),
                               BlocBuilder<CartBloc, CartState>(
                                 builder: (context, state) {
                                   final totalPrice = state is CartLoadedState
                                       ? getTotalSum(state)
                                       : 0.0;
-                                  return ListTile(
-                                    title: const TextCustom(
-                                      text: "Total Price",
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    trailing: TextCustom(
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const TextCustom(
+                                        text: "Total Price",
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      TextCustom(
                                         text:
-                                            "₹${totalPrice + shippingCharges + importCharges}"),
+                                            "₹${totalPrice + shippingCharges + importCharges}",
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
+                              const SizedBox(height: 24),
                               ButtonCustomized(
                                 text: "Add Address",
                                 color: AppColors.primarycolor,
-                                height: 50,
-                                width: 300,
-                                borderRadius: 10,
+                                height: 55,
+                                width: double.infinity,
+                                borderRadius: 12,
                                 onPressed: () {
-                                  final cartState =
-                                      context.read<CartBloc>().state
-                                          as CartLoadedState;
+                                  final cartState = context
+                                      .read<CartBloc>()
+                                      .state as CartLoadedState;
 
                                   final totalPrice = getTotalSum(cartState) +
                                       shippingCharges +
@@ -243,11 +395,11 @@ class Cart extends StatelessWidget {
 
                                   final cartData = {
                                     'totalAmount': totalPrice.toInt(),
-                                    'cartItems': cartState.cartItems.map((item) {
+                                    'cartItems':
+                                        cartState.cartItems.map((item) {
                                       return {
-                                        'productName':
-                                            item['productName'] ??
-                                                'Unknown Product',
+                                        'productName': item['productName'] ??
+                                            'Unknown Product',
                                         'quantity': item['count'] ?? 1,
                                         'price': item['price'] ?? 'N/A',
                                         'image': item['image'] ??
@@ -263,7 +415,6 @@ class Cart extends StatelessWidget {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 10),
                             ],
                           ),
                         ),

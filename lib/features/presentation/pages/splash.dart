@@ -1,75 +1,29 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lottie/lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-// class SplashWrapper extends StatelessWidget {
-//   const SplashWrapper({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (context) => AuthBloc()..add(CheckLoginStatusEvent()),
-//       child: const SplashScreen(),
-//     );
-//   }
-// }
-
-// class SplashScreen extends StatelessWidget {
-//   const SplashScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocListener<AuthBloc, AuthState>(
-//       listener: (context, state) {
-//         if (state is AuthenticatedState) {
-//           Navigator.pushReplacementNamed(context, "/HomeBottom");
-//         } else if (state is UnAuthenticatedState) {
-//           Navigator.pushReplacementNamed(context, "/Login");
-//         }
-//       },
-//       child: Scaffold(
-//         body: SafeArea(
-//           child: Center(
-//             child: AspectRatio(
-//               aspectRatio: 16 / 33,
-//               child: Image.asset(
-//                 "assets/images/SmartStride.png",
-//                 fit: BoxFit.cover,
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-class SplashWrapper extends StatefulWidget {
-  const SplashWrapper({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashWrapper> createState() => _SplashWrapperState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashWrapperState extends State<SplashWrapper> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuth();
+    _checkAuthAfterDelay();
   }
 
-  Future<void> _checkAuth() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    await Future.delayed(const Duration(milliseconds: 500)); // tiny delay
-
+  Future<void> _checkAuthAfterDelay() async {
+    await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
-
-    // Remove native splash before navigation
-    FlutterNativeSplash.remove();
-
+    final user = FirebaseAuth.instance.currentUser;
+    // Add a short fade-out for smoothness
+    await Future.delayed(const Duration(milliseconds: 200));
+    if (!mounted) return;
     if (user == null) {
       Navigator.pushReplacementNamed(context, "/Login");
     } else {
@@ -79,7 +33,86 @@ class _SplashWrapperState extends State<SplashWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // Nothing visible here, native splash is still covering
-    return const SizedBox.shrink();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          SizedBox.expand(
+            child: Lottie.asset(
+              'assets/animation/splash.anime.json',
+              fit: BoxFit.cover,
+              repeat: false,
+            ),
+          ),
+          const Center(child: AnimatedLogo()),
+        ],
+      ),
+    );
+  }
+}
+
+class AnimatedLogo extends StatefulWidget {
+  const AnimatedLogo({super.key});
+
+  @override
+  State<AnimatedLogo> createState() => _AnimatedLogoState();
+}
+
+class _AnimatedLogoState extends State<AnimatedLogo>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1800),
+      vsync: this,
+    )..forward();
+
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.shopping_cart,
+              size: 28,
+              color: Colors.black,
+            ),
+            SizedBox(width: 16),
+            Text(
+              'Stride Smart',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

@@ -18,7 +18,7 @@ class CustomProductCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: SizedBox(
-        width: 310,
+        width: 260,
         child: InkWell(
           onTap: onTap,
           child: Container(
@@ -41,7 +41,7 @@ class CustomProductCard extends StatelessWidget {
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(17)),
                   child: SizedBox(
-                    height: 250,
+                    height: 200,
                     width: double.infinity,
                     child: Image.network(
                       imageList[0],
@@ -59,7 +59,7 @@ class CustomProductCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8, left: 8),
                   child: TextCustom(
                     text: product1['productName'] ?? 'Unknown',
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -67,7 +67,7 @@ class CustomProductCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 2, left: 8, bottom: 13),
                   child: TextCustom(
                     text: "₹${product1['price']}",
-                    fontSize: 19,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

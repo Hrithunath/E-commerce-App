@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/core/Theme/app_colors.dart';
 import 'package:e_commerce_app/features/presentation/Widget/custom_text_widget.dart';
 import 'package:e_commerce_app/features/presentation/pages/product_details.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,14 @@ class Topcollections extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final gridSpacing = screenWidth * 0.02; 
-    final gridItemHeight = screenHeight * 0.3; 
+    final gridSpacing = screenWidth * 0.02;
+    final gridItemHeight = screenHeight * 0.3;
     return Scaffold(
+      backgroundColor: AppColors.bgColor,
       appBar: AppBar(
+        backgroundColor: AppColors.bgColor,
         title: const Text('Popular Collection'),
       ),
       body: FutureBuilder(

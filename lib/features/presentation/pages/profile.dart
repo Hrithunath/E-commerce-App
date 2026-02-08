@@ -1,8 +1,9 @@
-import 'package:e_commerce_app/core/Theme/app_colors.dart';
-import 'package:e_commerce_app/features/presentation/Widget/profile/custom_profile.dart';
+// ...existing code...
 import 'package:e_commerce_app/features/presentation/bloc/auth_bloc.dart';
+import 'package:e_commerce_app/features/presentation/Widget/profile/custom_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
@@ -13,64 +14,58 @@ class Profile extends StatelessWidget {
       builder: (context, state) {
         String userName = 'Unknown User';
         String userEmail = 'Not Available';
-
+        String? imageUrl;
         if (state is AuthenticatedState) {
           userName = state.username ?? 'Unknown User';
           userEmail = state.email ?? 'Not Available';
+          if (state.user != null && state.user!.photoURL != null) {
+            imageUrl = state.user!.photoURL;
+          }
         }
 
-        return SafeArea(
-          child: Scaffold(
-        
-            body: Column(
-              children: [
-                Container(
-                  color: AppColors.primarycolor,
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 25),
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 30,
-                            child: Icon(
-                              Icons.person,
-                              size: 50,
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(
-                                  userName,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                              ),
-                              Text(
-                                userEmail,
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 200, 200, 200),
-                                    fontSize: 15),
-                              ),
-                            ],
-                          ),
-                        ],
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 32),
+              if (imageUrl != null && imageUrl.isNotEmpty)
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(imageUrl),
+                  backgroundColor: Colors.grey[200],
+                  onBackgroundImageError: (_, __) => {},
+                )
+              else
+                const Icon(Icons.person, size: 80, color: Colors.grey),
+              const SizedBox(height: 16),
+              Text(
+                userName,
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                userEmail,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
                       ),
-                      const SizedBox(height: 20),
                     ],
                   ),
+                  child: const Menu(),
                 ),
-                const Expanded(
-                  child: Menu(),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

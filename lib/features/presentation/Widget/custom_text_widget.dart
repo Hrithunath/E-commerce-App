@@ -13,8 +13,9 @@ class TextCustom extends StatelessWidget {
   final String? fontFamily;
   final VoidCallback? onTap;
   final TextOverflow? overflow;
-  
-  const TextCustom({super.key, 
+  final int? maxLines;
+
+  const TextCustom({super.key,
     required this.text,
     this.fontSize,
     this.fontWeight,
@@ -27,6 +28,7 @@ class TextCustom extends StatelessWidget {
     this.fontFamily,
     this.onTap,
     this.overflow,
+    this.maxLines,
   });
 
   @override
@@ -48,6 +50,7 @@ class TextCustom extends StatelessWidget {
           ),
           textAlign: textAlign,
           overflow: overflow,
+          maxLines: maxLines,
           softWrap: true,
         ),
       );
@@ -66,6 +69,7 @@ class TextCustom extends StatelessWidget {
         ),
         textAlign: textAlign,
         overflow: overflow,
+        maxLines: maxLines,
         softWrap: true,
       );
     }
