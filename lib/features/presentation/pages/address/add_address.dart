@@ -137,7 +137,7 @@ class AddAddress extends StatelessWidget {
                   ),
                   SizedBox(height: 25.h),
                   ButtonCustomized(
-                    text: address == null ? "Add Address" : "Update Address",
+                    text: "Save",
                     height: 60.h,
                     width: double.infinity,
                     color: AppColors.primarycolor,

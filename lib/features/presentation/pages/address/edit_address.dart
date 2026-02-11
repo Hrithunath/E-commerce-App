@@ -157,7 +157,7 @@ class _EditAddressState extends State<EditAddress> {
                   ),
                   SizedBox(height: 25.h),
                   ButtonCustomized(
-                    text: "Edit Address",
+                    text: "Save",
                     height: 60.h,
                     width: double.infinity,
                     color: AppColors.primarycolor,

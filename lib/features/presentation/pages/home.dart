@@ -107,7 +107,7 @@ class Home extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: CustomTextField(
-                                    hint: 'Search by name',
+                                    hint: 'Search products, brands, or styles',
                                     fillColor: Colors.white,
                                     borderColor: Colors.transparent,
                                     onTap: () {

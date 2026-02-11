@@ -26,7 +26,7 @@ class SearchingProducts extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: CustomTextField(
-                hint: 'Search by name',
+                hint: 'Search products, brands, or styles',
                 fillColor: Colors.white,
                 borderColor: Colors.transparent,
                 textStyle: TextStyle(

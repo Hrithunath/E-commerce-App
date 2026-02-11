@@ -34,7 +34,6 @@ class NewArrivals extends StatelessWidget {
       backgroundColor: AppColors.bgColor,
       appBar: AppBar(
         title: const Text('New Arrivals'),
-        backgroundColor: Colors.blueAccent,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: fetchNewArrivals(),
